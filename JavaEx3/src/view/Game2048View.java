@@ -19,6 +19,8 @@ public class Game2048View extends Observable implements View, Runnable {
 	// Data Members
 	Display display;
 	Shell shell;
+	Label scoreLbl;
+	Label bestScoreLbl;
 	
 	// Constants
 	private static final int LABEL_DATA_WIDTH = 60;
@@ -61,45 +63,8 @@ public class Game2048View extends Observable implements View, Runnable {
 		saveButton.setText("Save Game");
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
-		// Group which wrap game board components
-	    Group boardGroup = new Group(shell, SWT.SHADOW_OUT);
-	    boardGroup.setLayout(new GridLayout(2, true));
-	    boardGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		
-	    // Grid data for both score labels
-	    GridData labelData = new GridData();
-		labelData.widthHint = LABEL_DATA_WIDTH;					/* default width */
-		labelData.horizontalAlignment = SWT.FILL;	/* grow to fill available width */
-	    
-		// Group which contains score text
-	    final Group scoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
-	    scoreGroup.setText("SCORE");
-	    scoreGroup.setLayout(new GridLayout(1, true));
-	    scoreGroup.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false, 1, 1));
-	    
-	    // Score text 
-	    final Label scoreLbl = new Label(scoreGroup, SWT.WRAP);
-	    scoreLbl.setText("0");
-	    scoreLbl.setLayoutData(labelData);
-	 	
-	    // Group which contains best score label
-	    final Group bestScoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
-	    bestScoreGroup.setText("BEST");
-	    bestScoreGroup.setLayout(new GridLayout(1, true));
-	    bestScoreGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
-	    
-	 	// Best score label
-	    final Label bestScoreLbl = new Label(bestScoreGroup, SWT.WRAP);
-	    bestScoreLbl.setText("0");
-		bestScoreLbl.setLayoutData(labelData);
-	    
-	    /*final Text bestScoreTxt = new Text(bestScoreGroup, SWT.BORDER);
-	    bestScoreTxt.setText("0");
-	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
-		
-		// Game board
-		Board board = new Board(boardGroup, SWT.BORDER);
-		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
+		// Initialize the main group which contains game board and score groups
+		initBoardGroup();
 		
 		// Determine undo button select action
 		undoButton.addSelectionListener(new SelectionListener() {
@@ -156,7 +121,50 @@ public class Game2048View extends Observable implements View, Runnable {
 	    // Integrate created menu into shell
 	    shell.setMenuBar(menuBar);
 	}
-
+	
+	// Method which initializes the board group
+	private void initBoardGroup() {
+		// Group which wrap game board components
+	    Group boardGroup = new Group(shell, SWT.SHADOW_OUT);
+	    boardGroup.setLayout(new GridLayout(2, true));
+	    boardGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
+	    // Grid data for both score labels
+	    GridData labelData = new GridData();
+		labelData.widthHint = LABEL_DATA_WIDTH;					/* default width */
+		labelData.horizontalAlignment = SWT.FILL;	/* grow to fill available width */
+	    
+		// Group which contains score text
+	    final Group scoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
+	    scoreGroup.setText("SCORE");
+	    scoreGroup.setLayout(new GridLayout(1, true));
+	    scoreGroup.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false, 1, 1));
+	    
+	    // Score text 
+	    this.scoreLbl = new Label(scoreGroup, SWT.WRAP);
+	    scoreLbl.setText("0");
+	    scoreLbl.setLayoutData(labelData);
+	 	
+	    // Group which contains best score label
+	    final Group bestScoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
+	    bestScoreGroup.setText("BEST");
+	    bestScoreGroup.setLayout(new GridLayout(1, true));
+	    bestScoreGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
+	    
+	 	// Best score label
+	    this.bestScoreLbl = new Label(bestScoreGroup, SWT.WRAP);
+	    bestScoreLbl.setText("0");
+		bestScoreLbl.setLayoutData(labelData);
+	    
+	    /*final Text bestScoreTxt = new Text(bestScoreGroup, SWT.BORDER);
+	    bestScoreTxt.setText("0");
+	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
+		
+		// Game board
+		Board board = new Board(boardGroup, SWT.BORDER);
+		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
+	}
+	
 	@Override
 	public void run() {
 		initComponents();
