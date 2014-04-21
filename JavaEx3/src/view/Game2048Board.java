@@ -69,8 +69,7 @@ public class Game2048Board extends Board {
 							Font font = new Font(getDisplay(), "Tahoma", 16, SWT.BOLD);
 					        e.gc.setFont(font);
 					        e.gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-					        //e.gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-					        
+									        
 							// Draw string according to the corresponding value in boardData array
 					        int stringMargin = 4;
 							String cellStr = String.valueOf(boardData[i][j]);
