@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -13,6 +14,7 @@ public class Game2048Board extends Board {
 	// Constants
 	private static final int ROWS = 4;
 	private static final int COLS = 4;
+	private static final int LINE_WIDTH = 6;
 
 	// Methods
 
@@ -27,8 +29,9 @@ public class Game2048Board extends Board {
 		boardData = new int[ROWS][COLS];
 		
 		// Set board color
-		Color boardColor = new Color(parent.getDisplay(), 187, 173, 160);
+		Color boardColor = new Color(getDisplay(), 187, 173, 160);
 		this.setBackground(boardColor);
+		//this.setForeground(boardColor);
 		boardColor.dispose();
 
 		// add the paint listener
@@ -39,12 +42,12 @@ public class Game2048Board extends Board {
 				setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 				// Determine board dimensions 
-				int maxX = getSize().x - 1; // Board width
-				int maxY = getSize().y - 1; // Board height
+				int maxX = getSize().x - ((COLS+1)*(LINE_WIDTH)); // Board width minus borders
+				int maxY = getSize().y - ((ROWS+1)*(LINE_WIDTH)); // Board height minus borders
 				
 				// Initialize location values
-				int xLocation = 0;
-				int yLocation = 0;
+				int xLocation = LINE_WIDTH;
+				int yLocation = LINE_WIDTH;
 				int tileHeight = maxY / ROWS; 
 				int tileWidth = maxX / COLS;
 
@@ -52,20 +55,36 @@ public class Game2048Board extends Board {
 					// paint the board
 					for (int i = 0; i < boardData.length; i++) {
 						for (int j = 0; j < boardData[0].length; j++) {
+							// Set rectangles color
+							Color rectColor = new Color(getDisplay(), 237, 187, 110);
+							e.gc.setBackground(rectColor);
+							
 							// Draw rectangle in proper location
 							Rectangle rect = new Rectangle(xLocation, yLocation, tileWidth, tileHeight);
-							e.gc.drawRectangle(rect);
+							//e.gc.drawRectangle(rect);
+							e.gc.fillRectangle(rect);
+							rectColor.dispose();
 							
-							// Draw string according to the value of the corresponding boardData array
+							// Set string font properties
+							Font font = new Font(getDisplay(), "Tahoma", 16, SWT.BOLD);
+					        e.gc.setFont(font);
+					        e.gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+					        //e.gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+					        
+							// Draw string according to the corresponding value in boardData array
+					        int stringMargin = 4;
 							String cellStr = String.valueOf(boardData[i][j]);
-							e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) ),( (rect.y + tileHeight) - (tileHeight / 2) ));
+							e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) -stringMargin ),( (rect.y + tileHeight) - (tileHeight / 2) -stringMargin ));
+							
+							// font disposal after drawing the string
+							font.dispose();
 							
 							// Increment tile X location by its width value
-							xLocation += (tileWidth);
+							xLocation += (tileWidth + LINE_WIDTH);
 						}
 						// After painting a whole row
-						xLocation = 0; // Initialize X location
-						yLocation += (tileHeight); // Increment tile Y location by its height value
+						xLocation = LINE_WIDTH; // Initialize X location
+						yLocation += (tileHeight + LINE_WIDTH); // Increment tile Y location by its height value
 					}
 				}
 			}
