@@ -3,15 +3,19 @@ package view;
 import java.util.Observable;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -21,6 +25,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	Display display;
 	Shell shell;
 	Game2048Board board;
+	int userCommand;
 	Label scoreLbl;
 	Label bestScoreLbl;
 	String gameFile;
@@ -193,8 +198,91 @@ public class Game2048View extends Observable implements View, Runnable {
 		// Game board
 		this.board = new Game2048Board(boardGroup, SWT.WRAP);
 		this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
+		this.board.setFocus();
+		
+		// TODO: update userCommand according to enum index
+		board.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				switch (arg0.keyCode) {
+				case (SWT.ARROW_UP):
+					//userCommand = 1;
+					scoreLbl.setText("1000");
+					break;
+				case (SWT.ARROW_DOWN):
+					//userCommand = 2;
+					scoreLbl.setText("2000");
+					break;
+				case (SWT.ARROW_LEFT):
+					//userCommand = 3;
+					scoreLbl.setText("3000");
+					break;
+				case (SWT.ARROW_RIGHT):
+					//userCommand = 4;
+					scoreLbl.setText("4000");
+					break;
+				default:
+					break;
+				}
+				
+				if ( (arg0.keyCode == SWT.ARROW_UP) || (arg0.keyCode == SWT.ARROW_DOWN) || (arg0.keyCode == SWT.ARROW_LEFT) || (arg0.keyCode == SWT.ARROW_RIGHT) ) {
+					// raise a flag of a change
+					setChanged();
+					// actively notify all observers
+					// and invoke their update method
+					notifyObservers();
+				}
+			}
+		});
+		
+		
+		/*board.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent arg0) {
+				System.out.println("mouseUp");
+				
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				if (arg0.stateMask == SWT.MouseEnter) {
+					System.out.println("mouseDown");
+				}
+				
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent arg0) {
+				System.out.println("mouseDubleClick");
+				
+			}
+		});*/
+		
+		
+		/*Listener listener = new Listener() {
+		      public void handleEvent(Event event) {
+		        switch (event.type) {
+		        case ((SWT.MouseDown) ):
+		          System.out.println("down:" + event);
+		          break;
+		        case SWT.MouseMove:
+		          System.out.println("move:"+event);
+		          break;
+		        case SWT.MouseUp:
+		          System.out.println("Up:"+event);
+		          break;
+		        }
+		      }
+		    };
+		    board.addListener(SWT.MouseDown, listener);
+		    board.addListener(SWT.MouseUp, listener);
+		    */
 	}
-	
 	
 	//TODO
 	private void saveGame() {
@@ -236,10 +324,10 @@ public class Game2048View extends Observable implements View, Runnable {
 		});
 	}
 
+	//TODO
 	@Override
 	public int getUserCommand() {
-		// TODO Auto-generated method stub
-		return 0;
+		return userCommand;
 	}
 
 	@Override
