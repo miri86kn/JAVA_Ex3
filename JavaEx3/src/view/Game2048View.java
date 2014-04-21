@@ -161,7 +161,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
 		
 		// Game board
-		Board board = new Board(boardGroup, SWT.BORDER);
+		Board board = new Board(boardGroup, SWT.WRAP);
 		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 	}
 	
