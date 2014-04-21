@@ -32,7 +32,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		display = new Display();
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(3, false));
-		shell.setSize(400, 300);
+		shell.setSize(500, 400);
 		shell.setText("2048 Game");
 	    
 		// Initialize the menus
