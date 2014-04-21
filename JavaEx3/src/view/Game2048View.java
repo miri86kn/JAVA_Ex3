@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -19,8 +20,10 @@ public class Game2048View extends Observable implements View, Runnable {
 	// Data Members
 	Display display;
 	Shell shell;
+	Game2048Board board;
 	Label scoreLbl;
 	Label bestScoreLbl;
+	String gameFile;
 	
 	// Constants
 	private static final int LABEL_DATA_WIDTH = 60;
@@ -66,6 +69,18 @@ public class Game2048View extends Observable implements View, Runnable {
 		// Initialize the main group which contains game board and score groups
 		initBoardGroup();
 		
+		// Determine load button select action
+				loadButton.addSelectionListener(new SelectionListener() {
+
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						gameFile = loadGameFile();
+					}
+
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {}
+				});
+		
 		// Determine undo button select action
 		undoButton.addSelectionListener(new SelectionListener() {
 
@@ -103,6 +118,20 @@ public class Game2048View extends Observable implements View, Runnable {
 	    loadItem.setText("Load Game");
 	    MenuItem saveItem = new MenuItem(fileMenu, SWT.NONE);
 	    saveItem.setText("Save Game");
+	    
+	 // Determine load item select action
+	    loadItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				gameFile = loadGameFile();
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+	    
 	    
 	    // Create the Edit item's dropdown menu
 	    Menu editMenu = new Menu(menuBar);
@@ -161,8 +190,25 @@ public class Game2048View extends Observable implements View, Runnable {
 	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
 		
 		// Game board
-		Game2048Board board = new Game2048Board(boardGroup, SWT.WRAP);
-		board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
+		this.board = new Game2048Board(boardGroup, SWT.WRAP);
+		this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
+	}
+	
+	
+	//TODO
+	private void saveGame() {
+		
+	}
+	
+	// Method which opens file dialog and returns selected game file name
+	private String loadGameFile() {
+		FileDialog fd = new FileDialog(shell, SWT.OPEN);
+		fd.setText("Load Game");
+		fd.setFilterPath(System.getProperty("user.home"));
+		String[] filterExt = { ".xml", "*.*" };
+		fd.setFilterExtensions(filterExt);
+		String selected = fd.open();
+		return selected;
 	}
 	
 	@Override
@@ -183,8 +229,8 @@ public class Game2048View extends Observable implements View, Runnable {
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {
-				// ...
-				//canvas.redraw();
+				// ..
+				board.redraw();
 			}
 		});
 	}
