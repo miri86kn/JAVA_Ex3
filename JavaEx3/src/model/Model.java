@@ -11,5 +11,5 @@ public interface Model {
 	public State getPrevState(); //do actions to get to prev state
 	public boolean saveGame(State currState, String path); //save game to xml file
 	State loadGame(String path);//load game from path. path must be xml file
-	State newGame(); //generate new game
+	State newGame(int boardSize); //generate new game
 }
