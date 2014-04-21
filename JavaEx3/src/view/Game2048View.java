@@ -36,6 +36,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(3, false));
 		shell.setSize(500, 400);
+		shell.setMinimumSize(500, 400);
 		shell.setText("2048 Game");
 	    
 		// Initialize the menus
@@ -203,7 +204,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	// Method which opens file dialog and returns selected game file name
 	private String loadGameFile() {
 		FileDialog fd = new FileDialog(shell, SWT.OPEN);
-		fd.setText("Load Game");
+		fd.setText("Select Game File");
 		fd.setFilterPath(System.getProperty("user.home"));
 		String[] filterExt = { ".xml", "*.*" };
 		fd.setFilterExtensions(filterExt);
