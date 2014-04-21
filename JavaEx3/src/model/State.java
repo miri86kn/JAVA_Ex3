@@ -1,7 +1,7 @@
 package model;
 
 public  class State {
-
+	
 	int[][] board;
 	int score;
 	
@@ -18,4 +18,9 @@ public  class State {
 		this.score = score;
 	}
 	
+	//constractor -- create new state
+	public State(int boardSize) {
+		this.board = new int[boardSize][boardSize];
+		this.score = 0; //at the beginning of the game score is 0
+	}
 }
