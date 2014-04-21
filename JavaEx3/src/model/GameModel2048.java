@@ -3,7 +3,7 @@ package model;
 import java.util.Random;
 import java.util.Stack;
 
-public class Model2048 implements Model {
+public class GameModel2048 implements Model {
 
 	private Stack<State> stateStack;
 	private State currState;
@@ -11,7 +11,7 @@ public class Model2048 implements Model {
 	
 	public final int EMPTY_CELL = 0;
 	
-	public Model2048(int boardSize) {
+	public GameModel2048(int boardSize) {
 		
 		this.stateStack = new Stack<State>(); //create stack of state/moves
 		this.boardSize = boardSize;
@@ -24,9 +24,10 @@ public class Model2048 implements Model {
 	
 	
 	@Override
+	//move all board up
 	public void moveUp() {
-		// TODO Auto-generated method stub
-		for(int i=this.boardSize; i>0; i=i-2)
+		pushAllUp();
+		for(int i=this.boardSize-1; i>0; i=i-2)
 		{
 			for(int j=0; j<this.boardSize; j++)
 			{
@@ -37,34 +38,72 @@ public class Model2048 implements Model {
 					this.currState.setScore(this.currState.getScore() + this.currState.board[i-1][j]); //add to game score
 					this.currState.board[i][j] = this.EMPTY_CELL;
 				}
-				//previous cell is emty --> move up
-				else if (this.currState.board[i][j] != this.EMPTY_CELL &&  this.currState.board[i-1][j] == this.EMPTY_CELL)
-				{
-					this.currState.board[i-1][j] = this.currState.board[i][j];
-					this.currState.board[i][j] = this.EMPTY_CELL;
-					
-				}
 			}
 		}
-		
-		//this.stateStack.add(arg0);
+		pushAllUp();
+		this.stateStack.add(this.currState);
 	}
 
 	@Override
 	public void moveDown() {
-		// TODO Auto-generated method stub
+		pushAllDown();
+		for(int i=0; i<this.boardSize; i=i+2)
+		{
+			for(int j=0; j<this.boardSize; j++)
+			{
+				//cell and next cell are the same number --> add
+				if (this.currState.board[i][j] == this.currState.board[i+1][j])
+				{
+					this.currState.board[i+1][j] += this.currState.board[i][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i+1][j]); //add to game score
+					this.currState.board[i][j] = this.EMPTY_CELL;
+				}
+			}
+		}
+		pushAllDown();
+		this.stateStack.add(this.currState);
 		
 	}
 
 	@Override
 	public void moveLeft() {
-		// TODO Auto-generated method stub
+		pushAllLeft();
+		for(int i=0; i<this.boardSize; i++)
+		{
+			for(int j=this.boardSize-1; j>0; j=j-2)
+			{
+				//cell and previous cell are the same number --> add
+				if (this.currState.board[i][j] == this.currState.board[i][j-1])
+				{
+					this.currState.board[i][j-1] += this.currState.board[i][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j-1]); //add to game score
+					this.currState.board[i][j] = this.EMPTY_CELL;
+				}
+			}
+		}
+		pushAllLeft();
+		this.stateStack.add(this.currState);
 		
 	}
 
 	@Override
 	public void moveRight() {
-		// TODO Auto-generated method stub
+		pushAllRigth();
+		for(int i=0; i<this.boardSize; i++)
+		{
+			for(int j=0; j<this.boardSize-1; j=j+2)
+			{
+				//cell and previous cell are the same number --> add
+				if (this.currState.board[i][j] == this.currState.board[i][j+1])
+				{
+					this.currState.board[i][j+1] += this.currState.board[i][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j+1]); //add to game score
+					this.currState.board[i][j] = this.EMPTY_CELL;
+				}
+			}
+		}
+		pushAllRigth();
+		this.stateStack.add(this.currState);
 	}
 
 	@Override
@@ -149,4 +188,63 @@ public class Model2048 implements Model {
 		return 2;
 	}
 
+	private void pushAllRigth()
+	{
+		for(int i=0; i<boardSize; i++)
+		{
+			for(int j=0; j<boardSize-1; j++)
+			{
+				if (currState.board[i][j+1] == EMPTY_CELL)
+				{	
+					currState.board[i][j+1] =currState.board[i][j];
+					currState.board[i][j] = EMPTY_CELL;
+				}
+			}
+		}
+	}
+	
+	private void pushAllLeft()
+	{
+		for(int i=0; i<boardSize; i++)
+		{
+			for(int j=boardSize-1; j>0; j--)
+			{
+				if (currState.board[i][j-1] == EMPTY_CELL)
+				{	
+					currState.board[i][j-1] =currState.board[i][j];
+					currState.board[i][j] = EMPTY_CELL;
+				}
+			}
+		}
+	}
+	
+	private void pushAllUp()
+	{
+		for(int i=boardSize-1; i>0; i--)
+		{
+			for(int j=0; j<boardSize; j++)
+			{
+				if (currState.board[i-1][j] == EMPTY_CELL)
+				{	
+					currState.board[i-1][j] =currState.board[i][j];
+					currState.board[i][j] = EMPTY_CELL;
+				}
+			}
+		}
+	}
+	private void pushAllDown()
+	{
+		for(int i=0; i<boardSize-1; i++)
+		{
+			for(int j=0; j<boardSize; j++)
+			{
+				if (currState.board[i+1][j] == EMPTY_CELL)
+				{	
+					currState.board[i+1][j] =currState.board[i][j];
+					currState.board[i][j] = EMPTY_CELL;
+				}
+			}
+		}
+	}
+	
 }
