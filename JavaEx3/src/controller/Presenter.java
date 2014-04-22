@@ -11,6 +11,16 @@ public class Presenter implements Observer {
 	private View ui;
 	private Model model;
 	
+	public enum GameActions {
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		RESTART,
+		LOAD,
+		SAVE,
+		UNDO		
+	};
 	// Methods
 	
 	// Presenter constructor
