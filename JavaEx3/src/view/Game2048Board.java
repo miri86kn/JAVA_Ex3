@@ -16,10 +16,10 @@ public class Game2048Board extends Board {
 	// Data Members
 	int rows;
 	int cols;
-	
+
 	// Constants
 	private static final int LINE_WIDTH = 6;
-	
+
 	//private static final int rows = 4;
 	//private static final int cols = 4;
 
@@ -28,14 +28,14 @@ public class Game2048Board extends Board {
 	// Game2048Board Constructor
 	public Game2048Board(Composite parent, int style, int size, int[][] data) {
 		super(parent, style); // call Board Constructor
-		
+
 		// Initialize board dimensions
 		this.rows = size;
 		this.cols = size;
-		
+
 		// Initialize the 2d array
 		boardData = data;
-		
+
 		// Set board color
 		Color boardColor = new Color(getDisplay(), 187, 173, 160);
 		this.setBackground(boardColor);
@@ -46,14 +46,14 @@ public class Game2048Board extends Board {
 		addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
-				
+
 				setLayout(new GridLayout(cols, true));
 				setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 				// Determine board dimensions 
 				int maxX = getSize().x - ((cols+1)*(LINE_WIDTH)); // Board width minus borders
 				int maxY = getSize().y - ((rows+1)*(LINE_WIDTH)); // Board height minus borders
-				
+
 				// Initialize location values
 				int xLocation = LINE_WIDTH;
 				int yLocation = LINE_WIDTH;
@@ -64,29 +64,60 @@ public class Game2048Board extends Board {
 					// paint the board
 					for (int i = 0; i < boardData.length; i++) {
 						for (int j = 0; j < boardData[0].length; j++) {
-							// Set rectangles color
-							Color rectColor = new Color(getDisplay(), 237, 187, 110);
-							e.gc.setBackground(rectColor);
 							
+							
+							// Set rectangles color
+							Color rectColor;
+							switch (boardData[i][j]) {
+								case 0:
+									rectColor= new Color(getDisplay(), 204, 192, 179);
+								    break;
+								case 2:
+									rectColor= new Color(getDisplay(), 238, 228, 218);
+								    break;
+								case 4:
+									rectColor= new Color(getDisplay(), 237, 224, 200);
+								    break; 
+								case 8:
+									rectColor= new Color(getDisplay(), 237, 194, 147);
+								    break; 
+								case 16:
+									rectColor= new Color(getDisplay(), 220, 117, 75);
+								    break; 
+								case 32:
+									rectColor= new Color(getDisplay(), 220, 83, 53);
+								    break;
+								default:
+									rectColor= new Color(getDisplay(), 220, 186, 49);
+								  break;
+							}
+							
+							e.gc.setBackground(rectColor);
+
 							// Draw rectangle in proper location
 							Rectangle rect = new Rectangle(xLocation, yLocation, tileWidth, tileHeight);
 							//e.gc.drawRectangle(rect);
 							e.gc.fillRectangle(rect);
 							rectColor.dispose();
-							
+
 							// Set string font properties
 							Font font = new Font(getDisplay(), "Tahoma", 16, SWT.BOLD);
 					        e.gc.setFont(font);
 					        e.gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-									        
+
 							// Draw string according to the corresponding value in boardData array
 					        int stringMargin = 4;
-							String cellStr = String.valueOf(boardData[i][j]);
-							e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) -stringMargin ),( (rect.y + tileHeight) - (tileHeight / 2) -stringMargin ));
+							String cellStr;
+							if (boardData[i][j] == 0)
+								cellStr = "";
+							else
+								cellStr = String.valueOf(boardData[i][j]);
 							
+							e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) -stringMargin ),( (rect.y + tileHeight) - (tileHeight / 2) -stringMargin ));
+
 							// font disposal after drawing the string
 							font.dispose();
-							
+
 							// Increment tile X location by its width value
 							xLocation += (tileWidth + LINE_WIDTH);
 						}
@@ -98,7 +129,7 @@ public class Game2048Board extends Board {
 			}
 		});
 	}
-	
+
 	public void redraw(State state) {
 		setBoardData(state.getBoard());
 		this.redraw();
