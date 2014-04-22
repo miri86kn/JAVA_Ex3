@@ -24,6 +24,11 @@ public class Presenter implements Observer {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public int getUserCommand(){
+		
+		return 0;
+	}
 
 	
 }

@@ -11,6 +11,19 @@ public class GameModel2048 implements Model {
 	
 	public final int EMPTY_CELL = 0;
 	
+	
+	public enum GameActions {
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		RESTART,
+		LOAD,
+		SAVE,
+		UNDO		
+	};
+	
+	
 	public GameModel2048(int boardSize) {
 		
 		this.stateStack = new Stack<State>(); //create stack of state/moves
