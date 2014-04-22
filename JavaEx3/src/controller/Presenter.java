@@ -11,7 +11,6 @@ public class Presenter implements Observer {
 	private View ui;
 	private Model model;
 	
-	private static final int BOARD_SIZE = 4;
 
 	// Presenter constructor
 	public Presenter(Model model, View ui) {
