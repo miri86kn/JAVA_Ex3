@@ -11,14 +11,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+
+import controller.Presenter.GameActions;
 
 public class Game2048View extends Observable implements View, Runnable {
 	// Data Members
@@ -210,7 +210,7 @@ public class Game2048View extends Observable implements View, Runnable {
 			public void keyPressed(KeyEvent arg0) {
 				switch (arg0.keyCode) {
 				case (SWT.ARROW_UP):
-					//userCommand = 1;
+					userCommand = 1;
 					scoreLbl.setText("1000");
 					break;
 				case (SWT.ARROW_DOWN):
