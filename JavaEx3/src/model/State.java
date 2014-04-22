@@ -23,4 +23,10 @@ public  class State {
 		this.board = new int[boardSize][boardSize];
 		this.score = 0; //at the beginning of the game score is 0
 	}
+	
+	public int getBoardSize()
+	{
+		return this.board.length;
+	}
+	
 }

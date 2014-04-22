@@ -3,7 +3,7 @@ package model;
 import java.util.Random;
 import java.util.Stack;
 
-public class GameModel2048 implements Model {
+public class GameModel2048 implements Model, Runnable {
 
 	private Stack<State> stateStack;
 	private State currState;
@@ -249,6 +249,14 @@ public class GameModel2048 implements Model {
 				}
 			}
 		}
+	}
+
+
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

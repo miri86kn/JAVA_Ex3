@@ -11,25 +11,66 @@ public class Presenter implements Observer {
 	private View ui;
 	private Model model;
 	
-	
-	// Methods
-	
+	private static final int BOARD_SIZE = 4;
+
 	// Presenter constructor
 	public Presenter(Model model, View ui) {
 		this.model = model;
 		this.ui = ui;
 	}
-	
+
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		
+		// VIEW ACTIONS:
+		if (arg0 == ui) {
+			View.GameAction command = ui.getUserCommand();
+			// process user command from ui
+			switch (command) {
+			case LEFT:
+				model.moveLeft();
+				break;
+			case RIGHT:
+				model.moveRight();
+				break;
+			case UP:
+				model.moveUp();
+				break;
+			case DOWN:
+				model.moveDown();
+				break;
+			case LOAD:
+				break;
+			case RESTART:
+				try {
+					int boardSize;
+					if (arg1 != null) {
+						boardSize = Integer.parseInt(arg1.toString());
+						model.newGame(boardSize);
+					}
+				} 
+				catch (NumberFormatException nfe) {
+
+				}
+				break;
+			case SAVE:
+				break;
+			case UNDO:
+				model.getPrevState();
+				break;
+			default:
+				break;
+			}
+			
+		}
+		// MODEL ACTIONS:
+		else if (arg0 == model) {
+			
+		}
+
 	}
-	
-	public int getUserCommand(){
-		
+
+	public int getUserCommand() {
 		return 0;
 	}
 
-	
 }
