@@ -39,11 +39,15 @@ public class Presenter implements Observer {
 				model.moveDown();
 				break;
 			case LOAD:
+				if (arg1 != null && arg1.toString() != "")
+					model.loadGame(arg1.toString());
 				break;
 			case RESTART:
 			    model.newGame();
 				break;
 			case SAVE:
+				if (arg1 != null && arg1.toString() != "")
+				model.saveGame(arg1.toString());
 				break;
 			case UNDO:
 				model.getPrevState();

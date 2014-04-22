@@ -1,8 +1,15 @@
 package model;
 
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Observable;
 import java.util.Random;
 import java.util.Stack;
+
+import com.thoughtworks.xstream.XStream;
 
 
 public class GameModel2048 extends Observable implements Model, Runnable {
@@ -12,10 +19,7 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 	private int boardSize;
 	
 	public final int EMPTY_CELL = 0;
-	
-	
-	
-	
+			
 	public GameModel2048(int boardSize) {
 		
 		this.stateStack = new Stack<State>(); //create stack of state/moves
@@ -26,8 +30,6 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 		newGame();//create new game
 	}
 
-	
-	
 	@Override
 	//move all board up
 	public void moveUp() {
@@ -47,6 +49,12 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 		}
 		pushAllUp();
 		this.stateStack.add(this.currState);
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
+				
 	}
 
 	@Override
@@ -68,6 +76,11 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 		pushAllDown();
 		this.stateStack.add(this.currState);
 		
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
 	}
 
 	@Override
@@ -89,6 +102,11 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 		pushAllLeft();
 		this.stateStack.add(this.currState);
 		
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
 	}
 
 	@Override
@@ -109,6 +127,12 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 		}
 		pushAllRigth();
 		this.stateStack.add(this.currState);
+		
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers();
 	}
 
 	@Override
@@ -125,20 +149,44 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 
 	@Override
 	//get previous game state
-	public State getPrevState(){
-		return this.stateStack.pop();
+	public void getPrevState(){
+		this.currState = this.stateStack.pop();
 	}
 
 	@Override
-	public boolean saveGame(State currState, String path) {
-		// TODO Auto-generated method stub
-		return false;
+	public void saveGame(String path) {
+		//create xml from curren game state
+		XStream xstream = new XStream();
+		String xml = xstream.toXML(this.currState);
+		
+		try {
+		    BufferedWriter out = new BufferedWriter(new FileWriter(path));
+		    out.write(xml);
+		    out.close();
+		} 
+		catch (IOException e) {
+		    e.printStackTrace();
+		} 		
 	}
 
 	@Override
-	public State loadGame(String path) {
-		// TODO Auto-generated method stub
-		return null;
+	public void loadGame(String path) {
+		try {
+		XStream xstream = new XStream();
+		InputStream in = new FileInputStream(path);
+		State loadedState = (State)xstream.fromXML(in);
+		this.currState = loadedState;
+		this.stateStack.clear();
+		
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
+		} 
+		catch (IOException e) {
+		    e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -154,8 +202,7 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 		setChanged();
 		// actively notify all observers
 		// and invoke their update method
-		notifyObservers(); ///bbb
-		
+		notifyObservers(); 
 		
 		
 	}
@@ -178,10 +225,10 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 	//helper function: add random number to board
 	private void addRandomNumber(){
 		
-		boolean validLocation = false;
+	boolean validLocation = false;
 		
-		while (validLocation==false)
-		{
+	while (validLocation==false)
+	{
 			//generate random number between 0 and board size
 			Random rand = new Random();
 			int row = rand.nextInt(this.boardSize);
@@ -244,6 +291,7 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 			}
 		}
 	}
+	
 	private void pushAllDown()
 	{
 		for(int i=0; i<boardSize-1; i++)

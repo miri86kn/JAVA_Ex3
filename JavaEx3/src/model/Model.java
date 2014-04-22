@@ -8,9 +8,9 @@ public interface Model {
 	public void moveRight();
 	public int[][] getBoard();
 	public int getScore();
-	public State getPrevState(); //do actions to get to prev state
-	public boolean saveGame(State currState, String path); //save game to xml file
-	State loadGame(String path);//load game from path. path must be xml file
+	public void getPrevState(); //do actions to get to prev state
+	public void saveGame(String path); //save game to xml file
+	public void loadGame(String path);//load game from path. path must be xml file
 	public void newGame(); //generate new game
 	public State getCurrtState();
 }
