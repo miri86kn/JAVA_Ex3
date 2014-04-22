@@ -11,11 +11,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -77,6 +75,18 @@ public class Game2048View extends Observable implements View, Runnable {
 		
 		// Initialize the main group which contains game board and score groups
 		initBoardGroup();
+		
+		// Determine restart button select action
+		restartButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				newGame();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
 		
 		// Determine load button select action
 				loadButton.addSelectionListener(new SelectionListener() {
@@ -199,7 +209,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
 		
 		// Game board
-		this.board = new Game2048Board(boardGroup, SWT.WRAP);
+		this.board = new Game2048Board(boardGroup, SWT.WRAP,4);
 		this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 		this.board.setFocus();
 		
@@ -302,6 +312,18 @@ public class Game2048View extends Observable implements View, Runnable {
 		String selected = fd.open();
 		return selected;
 	}
+	
+	//TODO
+	// Method which starts new game
+	private void newGame() {
+		userCommand = GameAction.RESTART;
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); ///bbb
+	}
+	
 	
 	@Override
 	public void run() {
