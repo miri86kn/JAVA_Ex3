@@ -1,5 +1,7 @@
 package view;
 
+import model.State;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -44,6 +46,7 @@ public class Game2048Board extends Board {
 		addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
+				
 				setLayout(new GridLayout(cols, true));
 				setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
@@ -94,6 +97,12 @@ public class Game2048Board extends Board {
 				}
 			}
 		});
+	}
+	
+	public void redraw(State state) {
+		setBoardData(state.getBoard());
+		this.redraw();
+		//this.layout();
 	}
 
 	public int getRows() {

@@ -21,18 +21,16 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 public class Game2048View extends Observable implements View, Runnable {
-	
-	
-	
 	// Data Members
 	Display display;
 	Shell shell;
 	Game2048Board board;
 	GameAction userCommand;
+	Group boardGroup;
 	Label scoreLbl;
 	Label bestScoreLbl;
 	String gameFile;
-    State currState = new State();
+    State currState;
 	
 	// Constants
 	private static final int LABEL_DATA_WIDTH = 60;
@@ -45,7 +43,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(3, false));
 		shell.setSize(500, 400);
-		shell.setMinimumSize(500, 400);
+		//shell.setMinimumSize(500, 400);
 		shell.setText("2048 Game");
 	    
 		// Initialize the menus
@@ -77,7 +75,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
 		// Initialize the main group which contains game board and score groups
-		//initBoardGroup();
+		initBoardGroup();
 		
 		// Determine restart button select action
 		restartButton.addSelectionListener(new SelectionListener() {
@@ -174,9 +172,9 @@ public class Game2048View extends Observable implements View, Runnable {
 	}
 	
 	// Method which initializes the board group
-	private void initBoardGroup(State state) {
+	private void initBoardGroup() {
 		// Group which wrap game board components
-	    Group boardGroup = new Group(shell, SWT.SHADOW_OUT);
+	    boardGroup = new Group(shell, SWT.SHADOW_OUT);
 	    boardGroup.setLayout(new GridLayout(2, true));
 	    boardGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
@@ -206,100 +204,99 @@ public class Game2048View extends Observable implements View, Runnable {
 	    this.bestScoreLbl = new Label(bestScoreGroup, SWT.WRAP);
 	    bestScoreLbl.setText("0");
 		bestScoreLbl.setLayoutData(labelData);
-	    
-	    /*final Text bestScoreTxt = new Text(bestScoreGroup, SWT.BORDER);
-	    bestScoreTxt.setText("0");
-	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
-		
+	}
+	
+	// Method which initializes the game board
+	private void initGameBoard(State state) {
 		// Game board
-		this.board = new Game2048Board(boardGroup, SWT.WRAP,state.getBoardSize(), state.getBoard());
-		this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
-		this.board.setFocus();
-		
-		// TODO: update userCommand according to enum index
-		board.addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyReleased(KeyEvent arg0) {}
-			
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				switch (arg0.keyCode) {
-				case (SWT.ARROW_UP):
-					userCommand = GameAction.UP;
-					//scoreLbl.setText("1000");
-					break;
-				case (SWT.ARROW_DOWN):
-					userCommand = GameAction.DOWN;
-					//scoreLbl.setText("2000");
-					break;
-				case (SWT.ARROW_LEFT):
-					userCommand = GameAction.LEFT;
-					//scoreLbl.setText("3000");
-					break;
-				case (SWT.ARROW_RIGHT):
-					userCommand = GameAction.RIGHT;
-					//scoreLbl.setText("4000");
-					break;
-				default:
-					break;
-				}
+				this.board = new Game2048Board(boardGroup, SWT.WRAP,state.getBoardSize(), state.getBoard());
+				this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
+				this.board.setFocus();
 				
-				if ( (arg0.keyCode == SWT.ARROW_UP) || (arg0.keyCode == SWT.ARROW_DOWN) || (arg0.keyCode == SWT.ARROW_LEFT) || (arg0.keyCode == SWT.ARROW_RIGHT) ) {
-					// raise a flag of a change
-					setChanged();
-					// actively notify all observers
-					// and invoke their update method
-					notifyObservers();
-				}
-			}
-		});
-		
-		
-		/*board.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseUp(MouseEvent arg0) {
-				System.out.println("mouseUp");
+				// TODO: update userCommand according to enum index
+				board.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyReleased(KeyEvent arg0) {}
+					
+					@Override
+					public void keyPressed(KeyEvent arg0) {
+						switch (arg0.keyCode) {
+						case (SWT.ARROW_UP):
+							userCommand = GameAction.UP;
+							//scoreLbl.setText("1000");
+							break;
+						case (SWT.ARROW_DOWN):
+							userCommand = GameAction.DOWN;
+							//scoreLbl.setText("2000");
+							break;
+						case (SWT.ARROW_LEFT):
+							userCommand = GameAction.LEFT;
+							//scoreLbl.setText("3000");
+							break;
+						case (SWT.ARROW_RIGHT):
+							userCommand = GameAction.RIGHT;
+							//scoreLbl.setText("4000");
+							break;
+						default:
+							break;
+						}
+						
+						if ( (arg0.keyCode == SWT.ARROW_UP) || (arg0.keyCode == SWT.ARROW_DOWN) || (arg0.keyCode == SWT.ARROW_LEFT) || (arg0.keyCode == SWT.ARROW_RIGHT) ) {
+							// raise a flag of a change
+							setChanged();
+							// actively notify all observers
+							// and invoke their update method
+							notifyObservers();
+						}
+					}
+				});
 				
-			}
-			
-			@Override
-			public void mouseDown(MouseEvent arg0) {
-				if (arg0.stateMask == SWT.MouseEnter) {
-					System.out.println("mouseDown");
-				}
 				
-			}
-			
-			@Override
-			public void mouseDoubleClick(MouseEvent arg0) {
-				System.out.println("mouseDubleClick");
+				/*board.addMouseListener(new MouseListener() {
+					
+					@Override
+					public void mouseUp(MouseEvent arg0) {
+						System.out.println("mouseUp");
+						
+					}
+					
+					@Override
+					public void mouseDown(MouseEvent arg0) {
+						if (arg0.stateMask == SWT.MouseEnter) {
+							System.out.println("mouseDown");
+						}
+						
+					}
+					
+					@Override
+					public void mouseDoubleClick(MouseEvent arg0) {
+						System.out.println("mouseDubleClick");
+						
+					}
+				});*/
 				
-			}
-		});*/
-		
-		
-		/*Listener listener = new Listener() {
-		      public void handleEvent(Event event) {
-		        switch (event.type) {
-		        case ((SWT.MouseDown) ):
-		          System.out.println("down:" + event);
-		          break;
-		        case SWT.MouseMove:
-		          System.out.println("move:"+event);
-		          break;
-		        case SWT.MouseUp:
-		          System.out.println("Up:"+event);
-		          break;
-		        }
-		      }
-		    };
-		    board.addListener(SWT.MouseDown, listener);
-		    board.addListener(SWT.MouseUp, listener);
-		    */
-		
-		shell.pack(); //Rotem rules!!
+				
+				/*Listener listener = new Listener() {
+				      public void handleEvent(Event event) {
+				        switch (event.type) {
+				        case ((SWT.MouseDown) ):
+				          System.out.println("down:" + event);
+				          break;
+				        case SWT.MouseMove:
+				          System.out.println("move:"+event);
+				          break;
+				        case SWT.MouseUp:
+				          System.out.println("Up:"+event);
+				          break;
+				        }
+				      }
+				    };
+				    board.addListener(SWT.MouseDown, listener);
+				    board.addListener(SWT.MouseUp, listener);
+				    */
+				
+				shell.pack(); //Rotem rules!!
 	}
 	
 	//TODO
@@ -349,8 +346,13 @@ public class Game2048View extends Observable implements View, Runnable {
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {
-				initBoardGroup(currState);
-				board.redraw(); //TODO: remove
+				if (board == null) {
+					initGameBoard(currState);
+				}
+				else 
+				{
+					board.redraw(currState); 
+				}
 			}
 		});
 	}

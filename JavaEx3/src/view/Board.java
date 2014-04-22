@@ -13,5 +13,13 @@ public abstract class Board extends Canvas {
 	public Board(Composite parent, int style) {		
 		super(parent, style); // call canvas Constructor
 	}
+
+	public int[][] getBoardData() {
+		return boardData;
+	}
+
+	public void setBoardData(int[][] boardData) {
+		this.boardData = boardData;
+	}
 	
 }
