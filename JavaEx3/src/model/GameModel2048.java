@@ -48,6 +48,7 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 			}
 		}
 		pushAllUp();
+		addRandomNumber();
 		this.stateStack.add(this.currState);
 		// raise a flag of a change
 		setChanged();
@@ -74,6 +75,8 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 			}
 		}
 		pushAllDown();
+		addRandomNumber();
+		
 		this.stateStack.add(this.currState);
 		
 		// raise a flag of a change
@@ -100,6 +103,7 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 			}
 		}
 		pushAllLeft();
+		addRandomNumber();
 		this.stateStack.add(this.currState);
 		
 		// raise a flag of a change
@@ -126,6 +130,8 @@ public class GameModel2048 extends Observable implements Model, Runnable {
 			}
 		}
 		pushAllRigth();
+		addRandomNumber();
+		
 		this.stateStack.add(this.currState);
 		
 		// raise a flag of a change
