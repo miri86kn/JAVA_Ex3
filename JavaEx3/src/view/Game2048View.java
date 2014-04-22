@@ -21,11 +21,14 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
 public class Game2048View extends Observable implements View, Runnable {
+	
+	
+	
 	// Data Members
 	Display display;
 	Shell shell;
 	Game2048Board board;
-	int userCommand;
+	GameAction userCommand;
 	Label scoreLbl;
 	Label bestScoreLbl;
 	String gameFile;
@@ -210,20 +213,20 @@ public class Game2048View extends Observable implements View, Runnable {
 			public void keyPressed(KeyEvent arg0) {
 				switch (arg0.keyCode) {
 				case (SWT.ARROW_UP):
-					//userCommand = 1;
-					scoreLbl.setText("1000");
+					userCommand = GameAction.UP;
+					//scoreLbl.setText("1000");
 					break;
 				case (SWT.ARROW_DOWN):
-					//userCommand = 2;
-					scoreLbl.setText("2000");
+					userCommand = GameAction.DOWN;
+					//scoreLbl.setText("2000");
 					break;
 				case (SWT.ARROW_LEFT):
-					//userCommand = 3;
-					scoreLbl.setText("3000");
+					userCommand = GameAction.LEFT;
+					//scoreLbl.setText("3000");
 					break;
 				case (SWT.ARROW_RIGHT):
-					//userCommand = 4;
-					scoreLbl.setText("4000");
+					userCommand = GameAction.RIGHT;
+					//scoreLbl.setText("4000");
 					break;
 				default:
 					break;
@@ -326,7 +329,7 @@ public class Game2048View extends Observable implements View, Runnable {
 
 	//TODO
 	@Override
-	public int getUserCommand() {
+	public GameAction getUserCommand() {
 		return userCommand;
 	}
 
