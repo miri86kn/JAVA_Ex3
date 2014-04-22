@@ -11,22 +11,28 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 public class Game2048Board extends Board {
+	// Data Members
+	int rows;
+	int cols;
+	
 	// Constants
-	private static final int ROWS = 4;
-	private static final int COLS = 4;
 	private static final int LINE_WIDTH = 6;
+	
+	//private static final int rows = 4;
+	//private static final int cols = 4;
 
 	// Methods
 
 	// Game2048Board Constructor
-	public Game2048Board(Composite parent, int style) {
+	public Game2048Board(Composite parent, int style, int size) {
 		super(parent, style); // call Board Constructor
 		
-		/*boardData = new int[][] { { 4, 0, 0, 3 }, { 8, 0, 16, 32 },
-				{ 64, 0, 8, 2 }, { 128, 0, 0, 64 } };*/
-
+		// Initialize board dimensions
+		this.rows = size;
+		this.cols = size;
+		
 		// Initialize the 2d array
-		boardData = new int[ROWS][COLS];
+		boardData = new int[rows][cols];
 		
 		// Set board color
 		Color boardColor = new Color(getDisplay(), 187, 173, 160);
@@ -38,18 +44,18 @@ public class Game2048Board extends Board {
 		addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
-				setLayout(new GridLayout(COLS, true));
+				setLayout(new GridLayout(cols, true));
 				setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 				// Determine board dimensions 
-				int maxX = getSize().x - ((COLS+1)*(LINE_WIDTH)); // Board width minus borders
-				int maxY = getSize().y - ((ROWS+1)*(LINE_WIDTH)); // Board height minus borders
+				int maxX = getSize().x - ((cols+1)*(LINE_WIDTH)); // Board width minus borders
+				int maxY = getSize().y - ((rows+1)*(LINE_WIDTH)); // Board height minus borders
 				
 				// Initialize location values
 				int xLocation = LINE_WIDTH;
 				int yLocation = LINE_WIDTH;
-				int tileHeight = maxY / ROWS; 
-				int tileWidth = maxX / COLS;
+				int tileHeight = maxY / rows; 
+				int tileWidth = maxX / cols;
 
 				if (boardData != null) {
 					// paint the board
@@ -88,5 +94,21 @@ public class Game2048Board extends Board {
 				}
 			}
 		});
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getCols() {
+		return cols;
+	}
+
+	public void setCols(int cols) {
+		this.cols = cols;
 	}
 }
