@@ -41,16 +41,7 @@ public class Presenter implements Observer {
 			case LOAD:
 				break;
 			case RESTART:
-				try {
-					int boardSize;
-					if (arg1 != null) {
-						boardSize = Integer.parseInt(arg1.toString());
-						model.newGame(boardSize);
-					}
-				} 
-				catch (NumberFormatException nfe) {
-
-				}
+			    model.newGame();
 				break;
 			case SAVE:
 				break;
@@ -64,7 +55,7 @@ public class Presenter implements Observer {
 		}
 		// MODEL ACTIONS:
 		else if (arg0 == model) {
-			
+			ui.displayBoard(model.getCurrtState());
 		}
 
 	}

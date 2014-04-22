@@ -2,6 +2,8 @@ package view;
 
 import java.util.Observable;
 
+import model.State;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -30,6 +32,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	Label scoreLbl;
 	Label bestScoreLbl;
 	String gameFile;
+    State currState = new State();
 	
 	// Constants
 	private static final int LABEL_DATA_WIDTH = 60;
@@ -74,7 +77,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
 		// Initialize the main group which contains game board and score groups
-		initBoardGroup();
+		//initBoardGroup();
 		
 		// Determine restart button select action
 		restartButton.addSelectionListener(new SelectionListener() {
@@ -171,7 +174,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	}
 	
 	// Method which initializes the board group
-	private void initBoardGroup() {
+	private void initBoardGroup(State state) {
 		// Group which wrap game board components
 	    Group boardGroup = new Group(shell, SWT.SHADOW_OUT);
 	    boardGroup.setLayout(new GridLayout(2, true));
@@ -209,7 +212,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	    bestScoreTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));*/
 		
 		// Game board
-		this.board = new Game2048Board(boardGroup, SWT.WRAP,4);
+		this.board = new Game2048Board(boardGroup, SWT.WRAP,state.getBoardSize(), state.getBoard());
 		this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 		this.board.setFocus();
 		
@@ -295,6 +298,8 @@ public class Game2048View extends Observable implements View, Runnable {
 		    board.addListener(SWT.MouseDown, listener);
 		    board.addListener(SWT.MouseUp, listener);
 		    */
+		
+		shell.pack(); //Rotem rules!!
 	}
 	
 	//TODO
@@ -337,14 +342,15 @@ public class Game2048View extends Observable implements View, Runnable {
 	}
 
 	// ...
-
+	
 	@Override
-	public void displayBoard(int[][] data) {
+	public void displayBoard(State state) {
+		currState = state;
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {
-				// ..
-				board.redraw();
+				initBoardGroup(currState);
+				board.redraw(); //TODO: remove
 			}
 		});
 	}

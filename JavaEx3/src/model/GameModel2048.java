@@ -1,16 +1,17 @@
 package model;
 
+import java.util.Observable;
 import java.util.Random;
 import java.util.Stack;
 
-public class GameModel2048 implements Model, Runnable {
+
+public class GameModel2048 extends Observable implements Model, Runnable {
 
 	private Stack<State> stateStack;
 	private State currState;
 	private int boardSize;
 	
 	public final int EMPTY_CELL = 0;
-	
 	
 	
 	
@@ -22,7 +23,7 @@ public class GameModel2048 implements Model, Runnable {
 
 		//TODO: board size bust be even
 		
-		newGame(boardSize);//create new game
+		newGame();//create new game
 	}
 
 	
@@ -142,14 +143,21 @@ public class GameModel2048 implements Model, Runnable {
 
 	@Override
 	//create new game
-	public State newGame(int boardSize) {
+	public void newGame() {
 		
 		this.stateStack.clear(); //init stack that will hold states
-		this.currState = this.newGame(boardSize); //create initial game state
+		this.currState = new State(this.boardSize); //create initial game state
 		initBoard(); //initialize the board
 		stateStack.add(this.currState); //save current state
 		 
-		return this.currState;
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); ///bbb
+		
+		
+		
 	}
 	
 	//helper function: to initialize board 
@@ -257,6 +265,13 @@ public class GameModel2048 implements Model, Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+
+	@Override
+	public State getCurrtState() {
+		return this.currState;
 	}
 	
 }

@@ -24,7 +24,7 @@ public class Game2048Board extends Board {
 	// Methods
 
 	// Game2048Board Constructor
-	public Game2048Board(Composite parent, int style, int size) {
+	public Game2048Board(Composite parent, int style, int size, int[][] data) {
 		super(parent, style); // call Board Constructor
 		
 		// Initialize board dimensions
@@ -32,7 +32,7 @@ public class Game2048Board extends Board {
 		this.cols = size;
 		
 		// Initialize the 2d array
-		boardData = new int[rows][cols];
+		boardData = data;
 		
 		// Set board color
 		Color boardColor = new Color(getDisplay(), 187, 173, 160);

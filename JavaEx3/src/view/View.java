@@ -1,5 +1,7 @@
 package view;
 
+import model.State;
+
 public interface View {
 	// Methods
 	
@@ -14,7 +16,7 @@ public interface View {
 		UNDO		
 	};
 	
-	public void displayBoard(int[][] data);
+	public void displayBoard(State data);
 	public GameAction getUserCommand();
 	public void displayScore();
 }
