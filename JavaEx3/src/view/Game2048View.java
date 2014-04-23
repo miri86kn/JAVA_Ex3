@@ -29,7 +29,6 @@ public class Game2048View extends Observable implements View, Runnable {
 	Group boardGroup;
 	Label scoreLbl;
 	Label bestScoreLbl;
-	String gameFile;
     State currState;
 	
 	// Constants
@@ -94,7 +93,7 @@ public class Game2048View extends Observable implements View, Runnable {
 
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
-						gameFile = loadGameFile();
+						loadGameFile();
 					}
 
 					@Override
@@ -157,7 +156,7 @@ public class Game2048View extends Observable implements View, Runnable {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				gameFile = loadGameFile();
+				loadGameFile();
 				
 			}
 			
@@ -343,14 +342,22 @@ public class Game2048View extends Observable implements View, Runnable {
 	}
 	
 	// Method which opens file dialog and returns selected game file name
-	private String loadGameFile() {
+	private void loadGameFile() {
 		FileDialog fd = new FileDialog(shell, SWT.OPEN);
 		fd.setText("Select Game File");
 		fd.setFilterPath(System.getProperty("user.home"));
 		String[] filterExt = { ".xml", "*.*" };
 		fd.setFilterExtensions(filterExt);
 		String selected = fd.open();
-		return selected;
+		if (selected != null) {
+			// update user command
+			userCommand = GameAction.LOAD;
+			// raise a flag of a change
+			setChanged();
+			// notify all observers about the given file name
+			// and invoke their update method
+			notifyObservers(selected);
+		}
 	}
 	
 	//TODO
