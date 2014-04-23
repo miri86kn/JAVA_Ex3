@@ -118,9 +118,7 @@ public class Game2048View extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				bestScoreLbl.setText("8823456");
-				//bestScoreTxt.pack();
-				//bestScoreGroup.pack();
+				undoAction();
 			}
 
 			@Override
@@ -190,6 +188,18 @@ public class Game2048View extends Observable implements View, Runnable {
 	    MenuItem restartItem = new MenuItem(editMenu, SWT.NONE);
 	    restartItem.setText("Restart Game");
 	    
+	    // Determine undo item select action
+	    restartItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				undoAction();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+
 	    
 	    // Determine restart item select action
 	    restartItem.addSelectionListener(new SelectionListener() {
