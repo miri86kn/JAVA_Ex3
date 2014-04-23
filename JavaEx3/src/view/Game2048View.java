@@ -100,6 +100,19 @@ public class Game2048View extends Observable implements View, Runnable {
 					@Override
 					public void widgetDefaultSelected(SelectionEvent arg0) {}
 				});
+				
+		// Determine save button select action
+		saveButton.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				saveGame();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			}
+		});
 		
 		// Determine undo button select action
 		undoButton.addSelectionListener(new SelectionListener() {
@@ -139,7 +152,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	    MenuItem saveItem = new MenuItem(fileMenu, SWT.NONE);
 	    saveItem.setText("Save Game");
 	    
-	 // Determine load item select action
+	    // Determine load item select action
 	    loadItem.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -152,6 +165,17 @@ public class Game2048View extends Observable implements View, Runnable {
 			public void widgetDefaultSelected(SelectionEvent arg0) {}
 		});
 	    
+	    // Determine save item select action
+	    saveItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				saveGame();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
 	    
 	    // Create the Edit item's dropdown menu
 	    Menu editMenu = new Menu(menuBar);
@@ -166,6 +190,19 @@ public class Game2048View extends Observable implements View, Runnable {
 	    undoItem.setText("Undo Move");
 	    MenuItem restartItem = new MenuItem(editMenu, SWT.NONE);
 	    restartItem.setText("Restart Game");
+	    
+	    
+	    // Determine restart item select action
+	    restartItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				newGame();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
 	    
 	    // Integrate created menu into shell
 	    shell.setMenuBar(menuBar);
@@ -285,9 +322,24 @@ public class Game2048View extends Observable implements View, Runnable {
 		 */
 	}
 	
-	//TODO
+	// Method which opens "save file" dialog and stores file name
 	private void saveGame() {
-		
+		FileDialog fd = new FileDialog(shell, SWT.SAVE);
+		fd.setText("Save Game");
+		fd.setFilterPath(System.getProperty("user.home"));
+		String[] filterExt = { ".xml" };
+		fd.setFilterExtensions(filterExt);
+		String fileName = fd.open(); // Store selected file name as string
+		if (fileName != null) {
+			// update user command
+			userCommand = GameAction.SAVE;
+			// raise a flag of a change
+			setChanged();
+			// notify all observers about the given file name
+			// and invoke their update method
+			notifyObservers(fileName);
+		}
+
 	}
 	
 	// Method which opens file dialog and returns selected game file name
