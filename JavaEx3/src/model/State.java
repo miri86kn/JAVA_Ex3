@@ -31,4 +31,15 @@ public  class State {
 		return this.board.length;
 	}
 	
+	public State Clone()
+	{
+		State newS = new State();
+		int[][] board = new int[this.board.length][this.board.length];
+		for(int i=0; i<this.board.length; i++)
+			for(int j=0; j<this.board.length; j++)
+				board[i][j] = this.board[i][j];
+		newS.setBoard(board);
+		newS.setScore(this.score);
+		return newS;
+	}
 }

@@ -52,7 +52,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		boardChanged = pushAllUp() || boardChanged;
 		if(boardChanged)
 			addRandomNumber();
-		this.stateStack.add(this.currState);
+		this.stateStack.add(this.currState.Clone());
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
@@ -82,7 +82,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		if (boardChanged)
 			addRandomNumber();
 		
-		this.stateStack.add(this.currState);
+		this.stateStack.add(this.currState.Clone());
 		
 		// raise a flag of a change
 		setChanged();
@@ -111,7 +111,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		boardChanged=  pushAllLeft() || boardChanged ;
 		if (boardChanged)
 			addRandomNumber();
-		this.stateStack.add(this.currState);
+		this.stateStack.add(this.currState.Clone());
 		
 		// raise a flag of a change
 		setChanged();
@@ -141,7 +141,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		if (boardChanged) 
 			addRandomNumber();
 		
-		this.stateStack.add(this.currState);
+		this.stateStack.add(this.currState.Clone());
 		
 		// raise a flag of a change
 		setChanged();
@@ -165,7 +165,15 @@ public class Game2048Model extends Observable implements Model, Runnable {
 	@Override
 	//get previous game state
 	public void getPrevState(){
+		if (this.stateStack.isEmpty())
+			return;
+		
 		this.currState = this.stateStack.pop();
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
 	}
 
 	@Override
@@ -211,7 +219,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		this.stateStack.clear(); //init stack that will hold states
 		this.currState = new State(this.boardSize); //create initial game state
 		initBoard(); //initialize the board
-		stateStack.add(this.currState); //save current state
+		stateStack.add(this.currState.Clone()); //save current state
 		 
 		// raise a flag of a change
 		setChanged();
@@ -353,5 +361,6 @@ public class Game2048Model extends Observable implements Model, Runnable {
 	public State getCurrtState() {
 		return this.currState;
 	}
+	
 	
 }
