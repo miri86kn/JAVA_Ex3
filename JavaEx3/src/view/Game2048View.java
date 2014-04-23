@@ -118,9 +118,7 @@ public class Game2048View extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				bestScoreLbl.setText("8823456");
-				//bestScoreTxt.pack();
-				//bestScoreGroup.pack();
+				undoAction();
 			}
 
 			@Override
@@ -190,6 +188,18 @@ public class Game2048View extends Observable implements View, Runnable {
 	    MenuItem restartItem = new MenuItem(editMenu, SWT.NONE);
 	    restartItem.setText("Restart Game");
 	    
+	    // Determine undo item select action
+	    restartItem.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				undoAction();
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {}
+		});
+
 	    
 	    // Determine restart item select action
 	    restartItem.addSelectionListener(new SelectionListener() {
@@ -360,7 +370,6 @@ public class Game2048View extends Observable implements View, Runnable {
 		}
 	}
 	
-	//TODO
 	// Method which starts new game
 	private void newGame() {
 		userCommand = GameAction.RESTART;
@@ -371,12 +380,16 @@ public class Game2048View extends Observable implements View, Runnable {
 		notifyObservers();
 	}
 	
-	// Method that handles score logic
-	private void updateScores() {
-		scoreLbl.setText(String.valueOf(currState.getScore())); // update current score
-		bestScoreLbl.setText(String.valueOf(currState.getScore())); // TODO: update best score
+	// Method which undo 1 action
+	private void undoAction() {
+		userCommand = GameAction.UNDO;
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers();
 	}
-	
+		
 	@Override
 	public void run() {
 		initComponents();
@@ -401,21 +414,21 @@ public class Game2048View extends Observable implements View, Runnable {
 				else 
 				{
 					board.redraw(currState); // redraw board
-					updateScores(); // update scores
+					displayScore(); // display updates scores
 				}
 			}
 		});
 	}
 
-	//TODO
 	@Override
 	public GameAction getUserCommand() {
 		return userCommand;
 	}
 
 	@Override
+	// Method that handles scores
 	public void displayScore() {
-		// TODO Auto-generated method stub
-
+		scoreLbl.setText(String.valueOf(currState.getScore())); // display current score
+		bestScoreLbl.setText(String.valueOf(currState.getScore())); // TODO: display best score
 	}
 }
