@@ -33,7 +33,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 	@Override
 	//move all board up
 	public void moveUp() {
-		pushAllUp();
+		boolean boardChanged = pushAllUp();
 		for(int i=0; i<this.boardSize-1; i++)
 		{
 			for(int j=0; j<this.boardSize; j++)
@@ -45,11 +45,13 @@ public class Game2048Model extends Observable implements Model, Runnable {
 					this.currState.setScore(this.currState.getScore() + this.currState.board[i+1][j]); //add to game score
 					this.currState.board[i+1][j] = this.EMPTY_CELL;
 					pushAllUp();
+					boardChanged = pushAllUp() || boardChanged;
 				}
 			}
 		}
-		pushAllUp();
-		addRandomNumber();
+		boardChanged = pushAllUp() || boardChanged;
+		if(boardChanged)
+			addRandomNumber();
 		this.stateStack.add(this.currState);
 		// raise a flag of a change
 		setChanged();
@@ -61,7 +63,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 
 	@Override
 	public void moveDown() {
-		pushAllDown();
+		boolean boardChanged = pushAllDown();
 		for(int i=this.boardSize-1; i>0; i--)
 		{
 			for(int j=0; j<this.boardSize; j++)
@@ -72,12 +74,13 @@ public class Game2048Model extends Observable implements Model, Runnable {
 					this.currState.board[i][j] += this.currState.board[i-1][j]; //add cells
 					this.currState.setScore(this.currState.getScore() + this.currState.board[i-1][j]); //add to game score
 					this.currState.board[i-1][j] = this.EMPTY_CELL;
-					pushAllDown();
+					boardChanged= pushAllDown() || boardChanged;
 				}
 			}
 		}
-		pushAllDown();
-		addRandomNumber();
+		boardChanged=pushAllDown() || boardChanged;
+		if (boardChanged)
+			addRandomNumber();
 		
 		this.stateStack.add(this.currState);
 		
@@ -90,7 +93,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 
 	@Override
 	public void moveLeft() {
-		pushAllLeft();
+		boolean boardChanged = pushAllLeft();
 		for(int i=0; i<this.boardSize; i++)
 		{
 			for(int j=0; j<this.boardSize-1; j++)
@@ -101,12 +104,13 @@ public class Game2048Model extends Observable implements Model, Runnable {
 					this.currState.board[i][j] += this.currState.board[i][j+1]; //add cells
 					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j+1]); //add to game score
 					this.currState.board[i][j+1] = this.EMPTY_CELL;
-					pushAllLeft();
+					boardChanged = pushAllLeft() || boardChanged;
 				}
 			}
 		}
-		pushAllLeft();
-		addRandomNumber();
+		boardChanged=  pushAllLeft() || boardChanged ;
+		if (boardChanged)
+			addRandomNumber();
 		this.stateStack.add(this.currState);
 		
 		// raise a flag of a change
@@ -118,7 +122,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 
 	@Override
 	public void moveRight() {
-		pushAllRigth();
+		boolean boardChanged = pushAllRigth();
 		for(int i=0; i<this.boardSize; i++)
 		{
 			for(int j=this.boardSize-1; j>0; j--)
@@ -129,12 +133,13 @@ public class Game2048Model extends Observable implements Model, Runnable {
 					this.currState.board[i][j] += this.currState.board[i][j-1]; //add cells
 					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j-1]); //add to game score
 					this.currState.board[i][j-1] = this.EMPTY_CELL;
-					pushAllRigth();
+					boardChanged = pushAllRigth() || boardChanged ;
 				}
 			}
 		}
-		pushAllRigth();
-		addRandomNumber();
+		boardChanged=  pushAllRigth() ||  boardChanged;
+		if (boardChanged) 
+			addRandomNumber();
 		
 		this.stateStack.add(this.currState);
 		
@@ -258,8 +263,9 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		return 2;
 	}
 
-	private void pushAllRigth()
+	private boolean pushAllRigth()
 	{
+		boolean boardChanged=false;
 		for(int i=0; i<boardSize; i++)
 		{
 			for(int j=0; j<boardSize-1; j++)
@@ -268,13 +274,17 @@ public class Game2048Model extends Observable implements Model, Runnable {
 				{	
 					currState.board[i][j+1] =currState.board[i][j];
 					currState.board[i][j] = EMPTY_CELL;
+					if(!boardChanged) 
+						boardChanged=true;
 				}
 			}
 		}
+		return boardChanged;
 	}
 	
-	private void pushAllLeft()
+	private boolean pushAllLeft()
 	{
+		boolean boardChanged=false;
 		for(int i=0; i<boardSize; i++)
 		{
 			for(int j=boardSize-1; j>0; j--)
@@ -283,13 +293,17 @@ public class Game2048Model extends Observable implements Model, Runnable {
 				{	
 					currState.board[i][j-1] =currState.board[i][j];
 					currState.board[i][j] = EMPTY_CELL;
+					if(!boardChanged) 
+						boardChanged=true;
 				}
 			}
 		}
+		return boardChanged;
 	}
 	
-	private void pushAllUp()
+	private boolean pushAllUp()
 	{
+		boolean boardChanged=false;
 		for(int i=boardSize-1; i>0; i--)
 		{
 			for(int j=0; j<boardSize; j++)
@@ -298,13 +312,17 @@ public class Game2048Model extends Observable implements Model, Runnable {
 				{	
 					currState.board[i-1][j] =currState.board[i][j];
 					currState.board[i][j] = EMPTY_CELL;
+					if(!boardChanged) 
+						boardChanged=true;
 				}
 			}
 		}
+		return boardChanged;
 	}
 	
-	private void pushAllDown()
+	private boolean pushAllDown()
 	{
+		boolean boardChanged=false;
 		for(int i=0; i<boardSize-1; i++)
 		{
 			for(int j=0; j<boardSize; j++)
@@ -313,9 +331,12 @@ public class Game2048Model extends Observable implements Model, Runnable {
 				{	
 					currState.board[i+1][j] =currState.board[i][j];
 					currState.board[i][j] = EMPTY_CELL;
+					if(!boardChanged) 
+						boardChanged=true;
 				}
 			}
 		}
+		return boardChanged;
 	}
 
 
