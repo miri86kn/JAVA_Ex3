@@ -371,6 +371,11 @@ public class Game2048View extends Observable implements View, Runnable {
 		notifyObservers();
 	}
 	
+	// Method that handles score logic
+	private void updateScores() {
+		scoreLbl.setText(String.valueOf(currState.getScore())); // update current score
+		bestScoreLbl.setText(String.valueOf(currState.getScore())); // TODO: update best score
+	}
 	
 	@Override
 	public void run() {
@@ -383,7 +388,6 @@ public class Game2048View extends Observable implements View, Runnable {
 		display.dispose();
 	}
 
-	// ...
 	
 	@Override
 	public void displayBoard(State state) {
@@ -396,7 +400,8 @@ public class Game2048View extends Observable implements View, Runnable {
 				}
 				else 
 				{
-					board.redraw(currState); 
+					board.redraw(currState); // redraw board
+					updateScores(); // update scores
 				}
 			}
 		});
