@@ -34,16 +34,17 @@ public class Game2048Model extends Observable implements Model, Runnable {
 	//move all board up
 	public void moveUp() {
 		pushAllUp();
-		for(int i=this.boardSize-1; i>0; i=i-2)
+		for(int i=0; i<this.boardSize-1; i++)
 		{
 			for(int j=0; j<this.boardSize; j++)
 			{
 				//cell and previous cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i-1][j])
+				if (this.currState.board[i][j] == this.currState.board[i+1][j])
 				{
-					this.currState.board[i-1][j] += this.currState.board[i][j]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i-1][j]); //add to game score
-					this.currState.board[i][j] = this.EMPTY_CELL;
+					this.currState.board[i][j] += this.currState.board[i+1][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i+1][j]); //add to game score
+					this.currState.board[i+1][j] = this.EMPTY_CELL;
+					pushAllUp();
 				}
 			}
 		}
@@ -61,16 +62,17 @@ public class Game2048Model extends Observable implements Model, Runnable {
 	@Override
 	public void moveDown() {
 		pushAllDown();
-		for(int i=0; i<this.boardSize; i=i+2)
+		for(int i=this.boardSize-1; i>0; i--)
 		{
 			for(int j=0; j<this.boardSize; j++)
 			{
 				//cell and next cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i+1][j])
+				if (this.currState.board[i][j] == this.currState.board[i-1][j])
 				{
-					this.currState.board[i+1][j] += this.currState.board[i][j]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i+1][j]); //add to game score
-					this.currState.board[i][j] = this.EMPTY_CELL;
+					this.currState.board[i][j] += this.currState.board[i-1][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i-1][j]); //add to game score
+					this.currState.board[i-1][j] = this.EMPTY_CELL;
+					pushAllDown();
 				}
 			}
 		}
@@ -91,14 +93,15 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		pushAllLeft();
 		for(int i=0; i<this.boardSize; i++)
 		{
-			for(int j=this.boardSize-1; j>0; j=j-2)
+			for(int j=0; j<this.boardSize-1; j++)
 			{
 				//cell and previous cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i][j-1])
+				if (this.currState.board[i][j] == this.currState.board[i][j+1])
 				{
-					this.currState.board[i][j-1] += this.currState.board[i][j]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j-1]); //add to game score
-					this.currState.board[i][j] = this.EMPTY_CELL;
+					this.currState.board[i][j] += this.currState.board[i][j+1]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j+1]); //add to game score
+					this.currState.board[i][j+1] = this.EMPTY_CELL;
+					pushAllLeft();
 				}
 			}
 		}
@@ -118,14 +121,15 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		pushAllRigth();
 		for(int i=0; i<this.boardSize; i++)
 		{
-			for(int j=0; j<this.boardSize-1; j=j+2)
+			for(int j=this.boardSize-1; j>0; j--)
 			{
 				//cell and previous cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i][j+1])
+				if (this.currState.board[i][j] == this.currState.board[i][j-1])
 				{
-					this.currState.board[i][j+1] += this.currState.board[i][j]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j+1]); //add to game score
-					this.currState.board[i][j] = this.EMPTY_CELL;
+					this.currState.board[i][j] += this.currState.board[i][j-1]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j-1]); //add to game score
+					this.currState.board[i][j-1] = this.EMPTY_CELL;
+					pushAllRigth();
 				}
 			}
 		}
@@ -161,7 +165,7 @@ public class Game2048Model extends Observable implements Model, Runnable {
 
 	@Override
 	public void saveGame(String path) {
-		//create xml from curren game state
+		//create xml from current game state
 		XStream xstream = new XStream();
 		String xml = xstream.toXML(this.currState);
 		
@@ -242,7 +246,8 @@ public class Game2048Model extends Observable implements Model, Runnable {
 			//just check location to be sure
 			validLocation = (row>=0 && row < this.boardSize && col >=0 && col<this.boardSize) //location is in the board
 							&& (this.currState.board[row][col] == this.EMPTY_CELL); //cell is empty
-			this.currState.board[row][col] = getNewRandomNumber(); //set there new random number
+			if(validLocation)
+				this.currState.board[row][col] = getNewRandomNumber(); //set there new random number
 		}
 	}
 	
