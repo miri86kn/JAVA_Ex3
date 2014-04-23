@@ -9,6 +9,9 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -41,6 +44,8 @@ public class Game2048View extends Observable implements View, Runnable {
 		display = new Display();
 		shell = new Shell(display);
 		shell.setLayout(new GridLayout(3, false));
+		Color shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
+		shell.setBackground(shellColor);
 		shell.setSize(500, 400);
 		//shell.setMinimumSize(500, 400);
 		shell.setText("2048 Game");
@@ -48,29 +53,43 @@ public class Game2048View extends Observable implements View, Runnable {
 		// Initialize the menus
 		initMenus();
 		
+		Font font = new Font(shell.getDisplay(), "Tahoma", 10, SWT.BOLD);
+		
 		// Group which contains all option buttons
 	    Group buttonGroup = new Group(shell, SWT.SHADOW_OUT);
 	    buttonGroup.setLayout(new GridLayout(1, true));
 	    buttonGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-	    
+		buttonGroup.setBackground(shellColor);
 	    // Undo button
 		Button undoButton = new Button(buttonGroup, SWT.PUSH);
 		undoButton.setText("Undo Move");
 		undoButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		undoButton.setFont(font);
+		Image imageBack = new Image(shell.getDisplay(), "src\\view\\style\\back.png");
+		undoButton.setImage(imageBack);
 		
 		// Restart button
 		Button restartButton = new Button(buttonGroup, SWT.PUSH);
 		restartButton.setText("Restart Game");
+		restartButton.setFont(font);
+		Image imageRestart = new Image(shell.getDisplay(), "src\\view\\style\\undo.png");
+		restartButton.setImage(imageRestart);
 		restartButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
 		// Load button
 		Button loadButton = new Button(buttonGroup, SWT.PUSH);
 		loadButton.setText("Load Game");
+		loadButton.setFont(font);
+		Image imageLoad = new Image(shell.getDisplay(), "src\\view\\style\\folder.png");
+		loadButton.setImage(imageLoad);
 		loadButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
 		// Save button
 		Button saveButton = new Button(buttonGroup, SWT.PUSH);
 		saveButton.setText("Save Game");
+		saveButton.setFont(font);
+		Image imageSave = new Image(shell.getDisplay(), "src\\view\\style\\star.png");
+		saveButton.setImage(imageSave);
 		saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		
 		// Initialize the main group which contains game board and score groups
@@ -223,33 +242,45 @@ public class Game2048View extends Observable implements View, Runnable {
 	    boardGroup = new Group(shell, SWT.SHADOW_OUT);
 	    boardGroup.setLayout(new GridLayout(2, true));
 	    boardGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		
+	    Color shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
+	    boardGroup.setBackground(shellColor);
+	    
 	    // Grid data for both score labels
 	    GridData labelData = new GridData();
 		labelData.widthHint = LABEL_DATA_WIDTH;					/* default width */
 		labelData.horizontalAlignment = SWT.FILL;	/* grow to fill available width */
-	    
+		
 		// Group which contains score text
-	    final Group scoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
+	    final Group scoreGroup = new Group(boardGroup, SWT.SHADOW_OUT );
 	    scoreGroup.setText("SCORE");
 	    scoreGroup.setLayout(new GridLayout(1, true));
 	    scoreGroup.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false, 1, 1));
+	    scoreGroup.setBackground( new Color(shell.getDisplay(), 250, 248, 239));
 	    
 	    // Score text 
-	    this.scoreLbl = new Label(scoreGroup, SWT.WRAP);
+	    Font font = new Font(shell.getDisplay(), "Tahoma", 16, SWT.BOLD);
+	       
+	    this.scoreLbl = new Label(scoreGroup, SWT.WRAP|SWT.BOLD);
 	    scoreLbl.setText("0");
 	    scoreLbl.setLayoutData(labelData);
-	 	
+	    scoreLbl.setFont(font);
+	    //scoreLbl.setSize(new Point());
+	    scoreLbl.setForeground(new Color(shell.getDisplay(), 119, 110, 101));
+	    scoreLbl.setBackground(new Color(shell.getDisplay(), 250, 248, 239));
+	    
 	    // Group which contains best score label
 	    final Group bestScoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
 	    bestScoreGroup.setText("BEST");
 	    bestScoreGroup.setLayout(new GridLayout(1, true));
 	    bestScoreGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
-	    
+	    bestScoreGroup.setBackground( new Color(shell.getDisplay(), 250, 248, 239));
 	 	// Best score label
 	    this.bestScoreLbl = new Label(bestScoreGroup, SWT.WRAP);
 	    bestScoreLbl.setText("0");
+	    bestScoreLbl.setFont(font);
 		bestScoreLbl.setLayoutData(labelData);
+		bestScoreLbl.setBackground( new Color(shell.getDisplay(), 250, 248, 239));
+		 	
 	}
 	
 	// Method which initializes the game board

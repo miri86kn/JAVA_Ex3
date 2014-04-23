@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.geom.RoundRectangle2D;
+
 import model.State;
 
 import org.eclipse.swt.SWT;
@@ -96,17 +98,18 @@ public class Game2048Board extends Board {
 
 							// Draw rectangle in proper location
 							Rectangle rect = new Rectangle(xLocation, yLocation, tileWidth, tileHeight);
-							//e.gc.drawRectangle(rect);
-							e.gc.fillRectangle(rect);
+   							//make border round
+							e.gc.fillRoundRectangle(xLocation, yLocation, tileWidth, tileHeight, 10, 10);
+   							//e.gc.fillRectangle(rect);
 							rectColor.dispose();
 
 							// Set string font properties
-							Font font = new Font(getDisplay(), "Tahoma", 16, SWT.BOLD);
+							Font font = new Font(getDisplay(), "Tahoma", 20, SWT.BOLD);
 					        e.gc.setFont(font);
-					        e.gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+					        e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
 
 							// Draw string according to the corresponding value in boardData array
-					        int stringMargin = 4;
+					        int stringMargin = 12;//(tileHeight - 20)/2;
 							String cellStr;
 							if (boardData[i][j] == 0)
 								cellStr = "";
