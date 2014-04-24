@@ -59,9 +59,11 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 
 	@Override
 	public void saveGame(String path) {
+		
+		
 		//create xml from current game state
 		XStream xstream = new XStream();
-		String xml = xstream.toXML(this.currState);
+		String xml = xstream.toXML(new SaveGameData(this.currState, this.stateStack)); //this.currState
 		
 		try {
 		    BufferedWriter out = new BufferedWriter(new FileWriter(path));
@@ -78,9 +80,9 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 		try {
 		XStream xstream = new XStream();
 		InputStream in = new FileInputStream(path);
-		State loadedState = (State)xstream.fromXML(in);
-		this.currState = loadedState;
-		this.stateStack.clear();
+		SaveGameData loadedGame = (SaveGameData)xstream.fromXML(in);
+		this.currState = loadedGame.getCurrentState();
+		this.stateStack = loadedGame.getStateStack();
 		
 		// raise a flag of a change
 		setChanged();

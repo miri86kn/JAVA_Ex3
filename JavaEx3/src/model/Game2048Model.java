@@ -142,7 +142,6 @@ public class Game2048Model extends AbsModel {
 		// and invoke their update method
 		notifyObservers();
 	}
-
 	
 	@Override
 	//helper function: to initialize board 
