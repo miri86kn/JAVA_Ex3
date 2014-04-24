@@ -387,7 +387,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		FileDialog fd = new FileDialog(shell, SWT.OPEN);
 		fd.setText("Select Game File");
 		fd.setFilterPath(System.getProperty("user.home"));
-		String[] filterExt = { ".xml", "*.*" };
+		String[] filterExt = { "*.xml", "*.*" };
 		fd.setFilterExtensions(filterExt);
 		String selected = fd.open();
 		if (selected != null) {
