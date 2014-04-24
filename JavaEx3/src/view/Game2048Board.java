@@ -118,14 +118,15 @@ public class Game2048Board extends Board {
 					        e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
 							
 					        int strHeight = font.getFontData()[0].getHeight();
-					        int fontWidth = (strHeight/2);
-					        int strWidht = fontWidth*(cellStr.length());
-							//int stringWidthMargin = ( (fontSize / 2) +2 );
+					        int fontWidth = (strHeight/2); // One digit width
+					        int strWidht = fontWidth*(cellStr.length()); // Whole string width, based on number of digits
+							
+					        // Calculation of String margins
 					        int stringWidthMargin = ((tileWidth - strWidht)/2) - (strWidht/3);
 							int stringHeightMargin = ((tileHeight - strHeight)/2) - (strHeight/3);
 							
 							//e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) -stringWidthMargin ),( (rect.y + tileHeight) - (tileHeight / 2) -stringHeightMargin ));
-							e.gc.drawString(cellStr,( xLocation + stringWidthMargin ),(yLocation + stringHeightMargin) );
+							e.gc.drawString(cellStr,(xLocation + stringWidthMargin),(yLocation + stringHeightMargin));
 							
 							// font disposal after drawing the string
 							font.dispose();
