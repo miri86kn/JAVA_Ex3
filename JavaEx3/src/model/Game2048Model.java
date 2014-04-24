@@ -1,40 +1,28 @@
 package model;
 
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Observable;
+
 import java.util.Random;
-import java.util.Stack;
-
-import com.thoughtworks.xstream.XStream;
 
 
-public class Game2048Model extends Observable implements Model, Runnable {
 
-	private Stack<State> stateStack;
-	private State currState;
-	private int boardSize;
+
+
+//public class Game2048Model extends Observable implements Model, Runnable {
+public class Game2048Model extends AbsModel {
 	
 	public final int EMPTY_CELL = 0;
-			
-	public Game2048Model(int boardSize) {
-		
-		this.stateStack = new Stack<State>(); //create stack of state/moves
-		this.boardSize = boardSize;
-
-		//TODO: board size bust be even
-		
-		newGame();//create new game
+	public final int WINNIG_NUMBER = 2048;
+	
+	public Game2048Model(int boardSize){
+		super(boardSize);
 	}
-
+	
+	
 	@Override
 	//move all board up
 	public void moveUp() {
 		boolean boardChanged = pushAllUp();
-		for(int i=0; i<this.boardSize-1; i++)
+		for(int i=0; i< this.boardSize-1; i++)
 		{
 			for(int j=0; j<this.boardSize; j++)
 			{
@@ -61,7 +49,8 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		// actively notify all observers
 		// and invoke their update method
 		notifyObservers(); 
-				
+		
+		
 	}
 
 	@Override
@@ -154,88 +143,10 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		notifyObservers();
 	}
 
-	@Override
-	//get current game board
-	public int[][] getBoard() {
-		return this.currState.getBoard();
-	}
-
-	@Override
-	 //get current game score
-	public int getScore() {
-		return this.currState.getScore();
-	}
-
-	@Override
-	//get previous game state
-	public void getPrevState(){
-		if (this.stateStack.isEmpty())
-			return;
-		
-		this.currState = this.stateStack.pop();
-		// raise a flag of a change
-		setChanged();
-		// actively notify all observers
-		// and invoke their update method
-		notifyObservers(); 
-	}
-
-	@Override
-	public void saveGame(String path) {
-		//create xml from current game state
-		XStream xstream = new XStream();
-		String xml = xstream.toXML(this.currState);
-		
-		try {
-		    BufferedWriter out = new BufferedWriter(new FileWriter(path));
-		    out.write(xml);
-		    out.close();
-		} 
-		catch (IOException e) {
-		    e.printStackTrace();
-		} 		
-	}
-
-	@Override
-	public void loadGame(String path) {
-		try {
-		XStream xstream = new XStream();
-		InputStream in = new FileInputStream(path);
-		State loadedState = (State)xstream.fromXML(in);
-		this.currState = loadedState;
-		this.stateStack.clear();
-		
-		// raise a flag of a change
-		setChanged();
-		// actively notify all observers
-		// and invoke their update method
-		notifyObservers(); 
-		} 
-		catch (IOException e) {
-		    e.printStackTrace();
-		}
-	}
-
-	@Override
-	//create new game
-	public void newGame() {
-		
-		this.stateStack.clear(); //init stack that will hold states
-		this.currState = new State(this.boardSize); //create initial game state
-		initBoard(); //initialize the board
-		stateStack.add(this.currState.Clone()); //save current state
-		 
-		// raise a flag of a change
-		setChanged();
-		// actively notify all observers
-		// and invoke their update method
-		notifyObservers(); 
-		
-		
-	}
 	
+	@Override
 	//helper function: to initialize board 
-	private void initBoard(){
+	public void initBoard(){
 		//init all cells to be nulls
 		for (int i=0; i< this.boardSize; i++ )
 		{
@@ -360,11 +271,40 @@ public class Game2048Model extends Observable implements Model, Runnable {
 	}
 
 
-
-	@Override
-	public State getCurrtState() {
-		return this.currState;
+	private boolean gameWon(){
+		for(int i=0; i< boardSize; i++)
+			for(int j=0; j< boardSize; j++)
+			{
+				if (this.currState.board[i][j] == WINNIG_NUMBER)
+					return true;
+			}
+		return false;
 	}
 	
-	
+	private boolean boardIsFull(){
+		boolean emptyCellExists=false;
+		boolean similarNumbersExists=false;
+		for(int i=0; i< boardSize; i++)
+			for(int j=0; j< boardSize; j++)
+			{
+				if (this.currState.board[i][j] == EMPTY_CELL)
+				{
+						emptyCellExists= true;
+						break;
+				}
+			}
+		if (emptyCellExists){
+			for(int i=0; i< boardSize-1; i++)
+				for(int j=0; j< boardSize-1; j++)
+				{
+					similarNumbersExists = (this.currState.board[i][j] == this.currState.board[i][j+1])
+							|| (this.currState.board[i][j] == this.currState.board[i][j-1]);
+					if (similarNumbersExists)
+						return false;
+				}
+			return true;
+		}
+		return false;
+	}
 }
+

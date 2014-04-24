@@ -13,4 +13,6 @@ public interface Model {
 	public void loadGame(String path);//load game from path. path must be xml file
 	public void newGame(); //generate new game
 	public State getCurrtState();
+	public void initBoard();
+	
 }
