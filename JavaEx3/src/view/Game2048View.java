@@ -47,7 +47,7 @@ public class Game2048View extends Observable implements View, Runnable {
 		Color shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
 		shell.setBackground(shellColor);
 		shell.setSize(500, 400);
-		//shell.setMinimumSize(500, 400);
+		shell.setMinimumSize(500, 400);
 		shell.setText("2048 Game");
 	    
 		// Initialize the menus
@@ -292,7 +292,7 @@ public class Game2048View extends Observable implements View, Runnable {
 
 		// TODO: find elegant way to display the board for the first time!!
 		shell.setMinimumSize(501, 401);
-
+		
 		// update userCommand according to enum index
 		board.addKeyListener(new KeyListener() {
 
