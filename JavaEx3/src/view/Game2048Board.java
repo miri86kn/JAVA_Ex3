@@ -20,10 +20,11 @@ public class Game2048Board extends Board {
 	int cols;
 
 	// Constants
+	private static final int ONE_DIGIT_FONT_SIZE = 26;
+	private static final int TWO_DIGIT_FONT_SIZE = 26;
+	private static final int THREE_DIGIT_FONT_SIZE = 22;
+	private static final int FOUR_DIGIT_FONT_SIZE = 18;
 	private static final int LINE_WIDTH = 6;
-
-	//private static final int rows = 4;
-	//private static final int cols = 4;
 
 	// Methods
 
@@ -103,21 +104,29 @@ public class Game2048Board extends Board {
    							//e.gc.fillRectangle(rect);
 							rectColor.dispose();
 
-							// Set string font properties
-							Font font = new Font(getDisplay(), "Tahoma", 20, SWT.BOLD);
-					        e.gc.setFont(font);
-					        e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
-
 							// Draw string according to the corresponding value in boardData array
-					        int stringMargin = 12;//(tileHeight - 20)/2;
 							String cellStr;
 							if (boardData[i][j] == 0)
 								cellStr = "";
 							else
 								cellStr = String.valueOf(boardData[i][j]);
 							
-							e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) -stringMargin ),( (rect.y + tileHeight) - (tileHeight / 2) -stringMargin ));
-
+							// Set string font properties
+							int fontSize = getFontSize(cellStr); 
+							Font font = new Font(getDisplay(), "Tahoma", fontSize, SWT.BOLD);
+					        e.gc.setFont(font);
+					        e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
+							
+					        int strHeight = font.getFontData()[0].getHeight();
+					        int fontWidth = (strHeight/2);
+					        int strWidht = fontWidth*(cellStr.length());
+							//int stringWidthMargin = ( (fontSize / 2) +2 );
+					        int stringWidthMargin = ((tileWidth - strWidht)/2) - (strWidht/3);
+							int stringHeightMargin = ((tileHeight - strHeight)/2) - (strHeight/3);
+							
+							//e.gc.drawString(cellStr,( (rect.x + tileWidth) - (tileWidth / 2) -stringWidthMargin ),( (rect.y + tileHeight) - (tileHeight / 2) -stringHeightMargin ));
+							e.gc.drawString(cellStr,( xLocation + stringWidthMargin ),(yLocation + stringHeightMargin) );
+							
 							// font disposal after drawing the string
 							font.dispose();
 
@@ -130,13 +139,35 @@ public class Game2048Board extends Board {
 					}
 				}
 			}
+
 		});
+	}
+	
+	// Calculate font size according to number of digits
+	private int getFontSize(String cellStr) {
+		int fontSize = 0;
+		switch (cellStr.length()) {
+		case 1:
+			fontSize = ONE_DIGIT_FONT_SIZE;
+			break;
+		case 2:
+			fontSize = TWO_DIGIT_FONT_SIZE;
+			break;
+		case 3:
+			fontSize = THREE_DIGIT_FONT_SIZE;
+			break;
+		case 4:
+			fontSize = FOUR_DIGIT_FONT_SIZE;
+			break;
+		default:
+			break;
+		}
+		return fontSize;
 	}
 
 	public void redraw(State state) {
 		setBoardData(state.getBoard());
 		this.redraw();
-		//this.layout();
 	}
 
 	public int getRows() {
