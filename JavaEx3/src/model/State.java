@@ -42,4 +42,16 @@ public  class State {
 		newS.setScore(this.score);
 		return newS;
 	}
+	
+	@Override
+	public boolean equals(Object state)
+	{
+		
+		State s =(State)state;
+		for(int i=0; i<board.length; i++)
+			for(int j=0; j<board.length; j++)
+				if (s.board[i][j] != board[i][j])
+					return false;
+		return this.score == s.score;
+	}
 }

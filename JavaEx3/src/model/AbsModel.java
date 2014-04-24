@@ -49,7 +49,11 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 		if (this.stateStack.isEmpty())
 			return;
 		
-		this.currState = this.stateStack.pop();
+		State s = this.stateStack.pop();
+		if (s.equals(this.currState))
+			this.currState = this.stateStack.pop();
+		else
+			this.currState =s;
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
