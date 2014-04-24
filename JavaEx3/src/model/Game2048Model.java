@@ -50,9 +50,12 @@ public class Game2048Model extends Observable implements Model, Runnable {
 			}
 		}
 		boardChanged = pushAllUp() || boardChanged;
+		
 		if(boardChanged)
+		{	
 			addRandomNumber();
-		this.stateStack.add(this.currState.Clone());
+			this.stateStack.add(this.currState.Clone());
+		}
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
@@ -80,10 +83,10 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		}
 		boardChanged=pushAllDown() || boardChanged;
 		if (boardChanged)
+		{
 			addRandomNumber();
-		
-		this.stateStack.add(this.currState.Clone());
-		
+			this.stateStack.add(this.currState.Clone());
+		}
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
@@ -110,9 +113,10 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		}
 		boardChanged=  pushAllLeft() || boardChanged ;
 		if (boardChanged)
+		{
 			addRandomNumber();
-		this.stateStack.add(this.currState.Clone());
-		
+			this.stateStack.add(this.currState.Clone());
+		}
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
@@ -139,10 +143,10 @@ public class Game2048Model extends Observable implements Model, Runnable {
 		}
 		boardChanged=  pushAllRigth() ||  boardChanged;
 		if (boardChanged) 
+		{
 			addRandomNumber();
-		
-		this.stateStack.add(this.currState.Clone());
-		
+			this.stateStack.add(this.currState.Clone());
+		}
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
