@@ -1,0 +1,11 @@
+<common.Settings>
+  <MAZE__SETTINGS>
+    <EMPTY>0</EMPTY>
+    <WALL>1</WALL>
+    <START>2</START>
+    <EXIT>3</EXIT>
+    <HORIZONTAL__MOVE__COAST>10</HORIZONTAL__MOVE__COAST>
+    <DIAGONAL__MOVE__COAST>10</DIAGONAL__MOVE__COAST>
+    <outer-class reference="../.."/>
+  </MAZE__SETTINGS>
+</common.Settings>

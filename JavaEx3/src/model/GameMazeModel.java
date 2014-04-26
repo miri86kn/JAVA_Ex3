@@ -6,24 +6,37 @@ public class GameMazeModel extends AbsModel {
 
 	public final int EMPTY = 0;
 	public final int WALL = 1;
-	public final int START = 2;
+	public final int PLAYER = 2;
 	public final int EXIT = 3;
 	
 	public final int HORIZONTAL_MOVE_COAST = 10;
 	public final int DIAGONAL_MOVE_COAST = 10;
+	
+	private int playerRow=-1; //first initialized on maze generation
+	private int playerCol=-1; //first initialized on maze generation
 	
 	
 	public GameMazeModel(int boardSize){
 		super(boardSize);
 	}
 	
+	
+	private void movePlayer(int toRow, int toCol)
+	{
+		currState.getBoard()[playerRow][playerCol] = EMPTY;
+		playerRow=toRow;
+		playerCol=toCol;
+		currState.getBoard()[playerRow][playerCol] = PLAYER;
+	}
+	
 	@Override
 	public void moveUp() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow()-1, currState.getPlayerCol()))
+		if (isMoveValid(playerRow-1, playerCol))
 		{
+			 
 			//update current player position on board
-			currState.setPlayerRow(currState.getPlayerRow()-1);
+			 movePlayer( playerRow-1, playerCol);
 			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
@@ -45,10 +58,10 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveDown() {
 		//is the move valid
-		if (isMoveValid( currState.getPlayerRow()+1, currState.getPlayerCol()))
+		if (isMoveValid(playerRow+1, playerCol))
 		{
 			//update current player position on board
-			currState.setPlayerRow(currState.getPlayerRow()+1);
+			movePlayer(playerRow+1, playerCol);
 			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
@@ -70,10 +83,10 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveLeft() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow(), currState.getPlayerCol()-1))
+		if (isMoveValid(playerRow, playerCol-1))
 		{
 			//update current player position on board
-			currState.setPlayerCol(currState.getPlayerCol()-1);
+			movePlayer(playerRow, playerCol-1);
 			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );	
@@ -95,10 +108,11 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveRight() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow(), currState.getPlayerCol()+1))
+		if (isMoveValid(playerRow, playerCol+1))
 		{
 			//update current player position on board
-			currState.setPlayerCol(currState.getPlayerCol()+1);
+			movePlayer(playerRow, playerCol+1);
+			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
 			
@@ -118,11 +132,10 @@ public class GameMazeModel extends AbsModel {
 
 	public void moveUpRight() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow()-1, currState.getPlayerCol()+1))
+		if (isMoveValid(playerRow-1, playerCol+1))
 		{
 			//update current player position on board
-			currState.setPlayerRow(currState.getPlayerRow()-1);
-			currState.setPlayerCol(currState.getPlayerCol()+1);
+			movePlayer(playerRow-1, playerCol+1);
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);	
 			
@@ -142,11 +155,11 @@ public class GameMazeModel extends AbsModel {
 
 	public void moveUpLeft() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow()-1,  currState.getPlayerCol()-1))
+		if (isMoveValid(playerRow-1,  playerCol-1))
 		{
 			//update current player position on board
-			currState.setPlayerRow(currState.getPlayerRow()-1);
-			currState.setPlayerCol(currState.getPlayerCol()-1);
+			movePlayer(playerRow-1,playerCol-1);
+			
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);
 			
@@ -166,11 +179,10 @@ public class GameMazeModel extends AbsModel {
 	
 	public void moveDownRight() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()+1))
+		if (isMoveValid(playerRow+1, playerCol+1))
 		{
 			//update current player position on board
-			currState.setPlayerRow(currState.getPlayerRow()+1);
-			currState.setPlayerCol(currState.getPlayerCol()+1);
+			movePlayer(playerRow+1, playerCol+1);
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);
 			
@@ -190,11 +202,10 @@ public class GameMazeModel extends AbsModel {
 
 	public void moveDownLeft() {
 		//is the move valid
-		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()-1))
+		if (isMoveValid(playerRow+1, playerCol-1))
 		{
 			//update current player position on board
-			currState.setPlayerRow(currState.getPlayerRow()+1);
-			currState.setPlayerCol(currState.getPlayerCol()-1);
+			movePlayer(playerRow+1, playerCol-1);
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);	
 			
@@ -233,7 +244,7 @@ public class GameMazeModel extends AbsModel {
 	
 	private boolean isGameWon(){
 		//is current player location the exit
-		return currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] ==  EXIT;
+		return currState.getBoard()[playerRow][playerCol] ==  EXIT;
 	}
 	
 	@Override
@@ -332,9 +343,9 @@ public class GameMazeModel extends AbsModel {
 						maze[i][j] = EMPTY;
 					else if (maz[i][j] == 'S')
 					{
-						maze[i][j] = START;
-						currState.setPlayerRow(i);
-						currState.setPlayerCol(j);
+						maze[i][j] = PLAYER;
+						playerRow =i;
+						playerCol=j;
 					}
 					else if (maz[i][j] == 'E')
 						maze[i][j] = EXIT;

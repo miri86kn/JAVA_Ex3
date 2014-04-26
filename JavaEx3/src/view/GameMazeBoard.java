@@ -8,16 +8,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-public class Game2048Board extends AbsBoard {
+
+public class GameMazeBoard extends AbsBoard {
 	// Data Members
 	int rows;
 	int cols;
-	Game2048Tile tiles[][];
+	GameMazeTile tiles[][];
 
 	// Methods
 
 	// Game2048Board Constructor
-	public Game2048Board(Composite parent, int style, int size, int[][] data) {
+	public GameMazeBoard(Composite parent, int style, int size, int[][] data) {
 		super(parent, style); // call Board Constructor
 
 		// Initialize board dimensions
@@ -36,10 +37,10 @@ public class Game2048Board extends AbsBoard {
 		this.setForeground(boardColor);
 		boardColor.dispose();
 
-		tiles= new Game2048Tile[rows][cols];
+		tiles= new GameMazeTile[rows][cols];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				tiles[i][j] = new Game2048Tile(this, SWT.BORDER_SOLID);
+				tiles[i][j] = new GameMazeTile(this, SWT.BORDER_SOLID);
 				tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				tiles[i][j].setValue(boardData[i][j]);
 			}

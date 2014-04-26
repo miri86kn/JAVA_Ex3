@@ -1,19 +1,14 @@
 package view;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
-import view.View.GameAction;
-
-public class Tile extends Canvas{
+public class Game2048Tile extends Canvas {
 	// Data Members
 	private Color color; //tile color
 	private int value;
@@ -25,7 +20,7 @@ public class Tile extends Canvas{
 	private static final int THREE_DIGIT_FONT_SIZE = 22;
 	private static final int FOUR_DIGIT_FONT_SIZE = 18;
 
-	public Tile(Composite parent, int style) {
+	public Game2048Tile(Composite parent, int style) {
 		super(parent, style);
 		// this.color = color;
 		this.value = 0;
