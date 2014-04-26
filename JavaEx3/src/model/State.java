@@ -1,10 +1,24 @@
 package model;
 
-public  class State {
+public class State {
 	
 	int[][] board;
 	int score;
+	private int playerRow; //first initialized on maze generation
+	private int playerCol; //first initialized on maze generation
 	
+	public int getPlayerRow() {
+		return playerRow;
+	}
+	public void setPlayerRow(int playerRow) {
+		this.playerRow = playerRow;
+	}
+	public int getPlayerCol() {
+		return playerCol;
+	}
+	public void setPlayerCol(int playerCol) {
+		this.playerCol = playerCol;
+	}
 	public int[][] getBoard() {
 		return board;
 	}

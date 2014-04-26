@@ -1,17 +1,17 @@
 package model;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Stack;
-import java.util.Vector;
 
-import model.Prim.Point;
 
 public class GameMazeModel extends AbsModel {
 
 	public final int EMPTY = 0;
 	public final int WALL = 1;
-	public final int PLAYER = 2;
+	public final int START = 2;
 	public final int EXIT = 3;
+	
+	public final int HORIZONTAL_MOVE_COAST = 10;
+	public final int DIAGONAL_MOVE_COAST = 10;
+	
 	
 	public GameMazeModel(int boardSize){
 		super(boardSize);
@@ -19,34 +19,223 @@ public class GameMazeModel extends AbsModel {
 	
 	@Override
 	public void moveUp() {
-		// TODO Auto-generated method stub
-		
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow()-1, currState.getPlayerCol()))
+		{
+			//update current player position on board
+			currState.setPlayerRow(currState.getPlayerRow()-1);
+			
+			//update score
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
+			
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers(); 
+			
+			//check if player reached exit
+			if(isGameWon())
+			{
+				
+			}
+		}
 	}
 
 	@Override
 	public void moveDown() {
-		// TODO Auto-generated method stub
-		
+		//is the move valid
+		if (isMoveValid( currState.getPlayerRow()+1, currState.getPlayerCol()))
+		{
+			//update current player position on board
+			currState.setPlayerRow(currState.getPlayerRow()+1);
+			
+			//update score
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
+			
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers(); 
+						
+			//check if player reached exit
+			if(isGameWon())
+			{
+							
+			}
+		}
 	}
 
 	@Override
 	public void moveLeft() {
-		// TODO Auto-generated method stub
-		
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow(), currState.getPlayerCol()-1))
+		{
+			//update current player position on board
+			currState.setPlayerCol(currState.getPlayerCol()-1);
+			
+			//update score
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );	
+			
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers(); 
+									
+		    //check if player reached exit
+			if(isGameWon())
+			{
+										
+			}
+		}
 	}
 
 	@Override
 	public void moveRight() {
-		// TODO Auto-generated method stub
-		
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow(), currState.getPlayerCol()+1))
+		{
+			//update current player position on board
+			currState.setPlayerCol(currState.getPlayerCol()+1);
+			//update score
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
+			
+			// raise a flag of a change
+						setChanged();
+						// actively notify all observers
+						// and invoke their update method
+						notifyObservers(); 
+												
+					    //check if player reached exit
+						if(isGameWon())
+						{
+													
+						}
+		}
 	}
 
+	public void moveUpRight() {
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow()-1, currState.getPlayerCol()+1))
+		{
+			//update current player position on board
+			currState.setPlayerRow(currState.getPlayerRow()-1);
+			currState.setPlayerCol(currState.getPlayerCol()+1);
+			//update score
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);	
+			
+			// raise a flag of a change
+						setChanged();
+						// actively notify all observers
+						// and invoke their update method
+						notifyObservers(); 
+												
+					    //check if player reached exit
+						if(isGameWon())
+						{
+													
+						}
+		}
+	}
+
+	public void moveUpLeft() {
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow()-1,  currState.getPlayerCol()-1))
+		{
+			//update current player position on board
+			currState.setPlayerRow(currState.getPlayerRow()-1);
+			currState.setPlayerCol(currState.getPlayerCol()-1);
+			//update score
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);
+			
+			// raise a flag of a change
+						setChanged();
+						// actively notify all observers
+						// and invoke their update method
+						notifyObservers(); 
+												
+					    //check if player reached exit
+						if(isGameWon())
+						{
+													
+						}
+		}
+	}
+	
+	public void moveDownRight() {
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()+1))
+		{
+			//update current player position on board
+			currState.setPlayerRow(currState.getPlayerRow()+1);
+			currState.setPlayerCol(currState.getPlayerCol()+1);
+			//update score
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);
+			
+			// raise a flag of a change
+						setChanged();
+						// actively notify all observers
+						// and invoke their update method
+						notifyObservers(); 
+												
+					    //check if player reached exit
+						if(isGameWon())
+						{
+													
+						}
+		}
+	}
+
+	public void moveDownLeft() {
+		//is the move valid
+		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()-1))
+		{
+			//update current player position on board
+			currState.setPlayerRow(currState.getPlayerRow()+1);
+			currState.setPlayerCol(currState.getPlayerCol()-1);
+			//update score
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);	
+			
+			// raise a flag of a change
+						setChanged();
+						// actively notify all observers
+						// and invoke their update method
+						notifyObservers(); 
+												
+					    //check if player reached exit
+						if(isGameWon())
+						{
+													
+						}
+		}
+	}
 	@Override
 	public void initBoard() {
-		// TODO Auto-generated method stub
+		//generate new maze and  push it to current state
 		this.currState.setBoard(generateMazeByPrimAlgo(boardSize));
 	}
-
+	
+	
+	private boolean isMoveValid(int toRow,  int toCol)
+	{
+		
+		if ((0<=toRow && toRow<boardSize )&& (0<=toCol && toRow<toCol ))
+		{ //valid locations inside the board
+			
+			return (currState.board[toCol][toRow] != WALL); //if no wall - than ok, else -not ok
+		}
+		else
+			return false;
+			
+	}
+	
+	private boolean isGameWon(){
+		//is current player location the exit
+		return currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] ==  EXIT;
+	}
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -54,7 +243,8 @@ public class GameMazeModel extends AbsModel {
 	}
 	
 	
-	
+	//generate new maze based on Prim Algorythm 
+	//All rights reserved to Google. 
     public int[][] generateMazeByPrimAlgo(int size)
     {
     	// dimensions of generated maze
@@ -141,7 +331,11 @@ public class GameMazeModel extends AbsModel {
 					else if (maz[i][j] == '.')
 						maze[i][j] = EMPTY;
 					else if (maz[i][j] == 'S')
-						maze[i][j] = PLAYER;
+					{
+						maze[i][j] = START;
+						currState.setPlayerRow(i);
+						currState.setPlayerCol(j);
+					}
 					else if (maz[i][j] == 'E')
 						maze[i][j] = EXIT;
 					
@@ -152,6 +346,8 @@ public class GameMazeModel extends AbsModel {
 		return maze;
     }
  
+    
+    
     static class Point{
     	Integer r;
     	Integer c;
