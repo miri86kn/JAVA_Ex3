@@ -395,6 +395,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			this.userCommand = userCommand;
 		}
 		
+		@Override
 		// Method for handling game over
 		public void gameOver() {
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION| SWT.YES | SWT.NO);
@@ -407,6 +408,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				System.exit(0);
 		}
 		
+		@Override
 		// Method for handling game winning
 		public void gameWin() {
 			MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION	| SWT.YES | SWT.NO);

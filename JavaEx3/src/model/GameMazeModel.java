@@ -23,10 +23,23 @@ public class GameMazeModel extends AbsModel {
 	
 	private void movePlayer(int toRow, int toCol)
 	{
-		currState.getBoard()[playerRow][playerCol] = EMPTY; // TODO: why?
+		currState.getBoard()[playerRow][playerCol] = EMPTY;
 		playerRow=toRow;
 		playerCol=toCol;
-		currState.getBoard()[playerRow][playerCol] = PLAYER;
+		
+		if (currState.getBoard()[playerRow][playerCol] != EXIT) {
+			currState.getBoard()[playerRow][playerCol] = PLAYER;
+		}
+		
+		//check if player reached exit
+		if(isGameWon())
+		{
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers("WIN");
+		}
 	}
 	
 	@Override

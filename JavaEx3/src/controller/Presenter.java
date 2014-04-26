@@ -59,6 +59,14 @@ public class Presenter implements Observer {
 		// MODEL ACTIONS:
 		else if (arg0 == model) {
 			ui.displayBoard(model.getCurrtState());
+			
+			if (arg1 != null && arg1.toString() == "WIN") {
+				ui.gameWin();
+			}
+	
+			if (arg1 != null && arg1.toString() == "OVER") {
+				ui.gameOver();
+			}
 		}
 
 	}

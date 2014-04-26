@@ -21,4 +21,6 @@ public interface View {
 	public void displayBoard(State data);
 	public GameAction getUserCommand();
 	public void displayScore();
+	public void gameWin();
+	public void gameOver();
 }
