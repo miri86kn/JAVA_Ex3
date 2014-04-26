@@ -17,10 +17,10 @@ public class Tile extends Canvas{
 	
 	
 
-	public Tile(Composite parent, int style, Color color, int val){
+	public Tile(Composite parent, int style){
 		super(parent, style);
-		this.color = color;
-		this.value = val;
+		//this.color = color;
+		//this.value = val;
 		
 		Font f = getFont();
 		Font nf = new Font(getDisplay(), f.getFontData()[0].getName(), 16, SWT.BOLD);
@@ -52,10 +52,11 @@ public class Tile extends Canvas{
 
 	public void setValue(int value) {
 		this.value = value;
+		changeBackgroundValue();
+		redraw();
 	}
 	
-
-	public void changeBackgroundValue(Color color){
-		setBackground(color);
+	public void changeBackgroundValue(){
+		//setBackground(color);
 	}
 }
