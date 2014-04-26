@@ -49,9 +49,9 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			shell.setLayout(new GridLayout(3, false));
 			Color shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
 			shell.setBackground(shellColor);
-			shell.setSize(500, 400);
-			shell.setMinimumSize(500, 400);
-			shell.setText("2048 Game");
+			shell.setSize(520, 420);
+			shell.setMinimumSize(520, 420);
+			setShellText();
 		    
 			// Initialize the menus
 			initMenus();
@@ -432,4 +432,5 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		        return false;
 		}
 	
+		protected abstract void setShellText();
 }

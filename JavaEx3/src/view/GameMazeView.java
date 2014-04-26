@@ -22,7 +22,7 @@ public class GameMazeView extends AbsGameView {
 		this.board.setFocus();
 
 		// TODO: find elegant way to display the board for the first time!!
-		shell.setMinimumSize(501, 401);
+		shell.setMinimumSize(521, 421);
 		
 		display.addFilter(SWT.KeyUp, new Listener()
 	    {
@@ -62,6 +62,11 @@ public class GameMazeView extends AbsGameView {
 	        }
 	    });
 
+	}
+
+	@Override
+	protected void setShellText() {
+		shell.setText("Maze Game");
 	}
 	
 	
