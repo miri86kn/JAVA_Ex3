@@ -13,6 +13,9 @@ public class Game2048Board extends AbsBoard {
 	int rows;
 	int cols;
 	Game2048Tile tiles[][];
+	
+	// Constants
+	private static final int SPACE_WIDTH = 8;
 
 	// Methods
 
@@ -24,7 +27,17 @@ public class Game2048Board extends AbsBoard {
 		this.rows = size;
 		this.cols = size;
 
-		setLayout(new GridLayout(cols, true));
+		// Configure board layout
+		GridLayout gl = new GridLayout();
+		gl.numColumns = cols;
+		gl.makeColumnsEqualWidth = true;
+		gl.marginWidth = SPACE_WIDTH;
+		gl.marginHeight = SPACE_WIDTH;
+		gl.verticalSpacing = SPACE_WIDTH;
+		gl.horizontalSpacing = SPACE_WIDTH;
+		
+		// Set board layout		
+		setLayout(gl);
 		
 		// Initialize the 2d array
 		boardData = data;

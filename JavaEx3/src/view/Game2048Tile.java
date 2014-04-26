@@ -12,12 +12,11 @@ public class Game2048Tile extends Canvas {
 	// Data Members
 	private Color color; //tile color
 	private int value;
-	private int fontSize;
 	
 	// Constants
 	private static final int ONE_DIGIT_FONT_SIZE = 26;
 	private static final int TWO_DIGIT_FONT_SIZE = 26;
-	private static final int THREE_DIGIT_FONT_SIZE = 22;
+	private static final int THREE_DIGIT_FONT_SIZE = 24;
 	private static final int FOUR_DIGIT_FONT_SIZE = 18;
 
 	public Game2048Tile(Composite parent, int style) {
@@ -26,7 +25,7 @@ public class Game2048Tile extends Canvas {
 		this.value = 0;
 		
 		addPaintListener(new PaintListener() {
-
+			
 			@Override
 			public void paintControl(PaintEvent e) {
 				int tileWidth = getSize().x;
@@ -34,7 +33,7 @@ public class Game2048Tile extends Canvas {
 				
 				// Set string font properties
 				String tileStr = "" + value;
-				int fontSize = getFontSize(tileStr);
+				int fontSize = getFontSize(tileStr); // Compute font size according to value
 				Font font = new Font(getDisplay(), "Tahoma", fontSize, SWT.BOLD);
 				e.gc.setFont(font);
 				
@@ -49,11 +48,12 @@ public class Game2048Tile extends Canvas {
 				int strHeight = font.getFontData()[0].getHeight();
 		        int charWidth = (strHeight/2); // One digit width
 				int strWidth = charWidth*(tileStr.length()); // Whole string width, based on number of digits
-				int stringWidthMargin = ((tileWidth - strWidth)/2) - (strWidth/3) -2;
+				int stringWidthMargin = ((tileWidth - strWidth)/2) - (strWidth/3) -1;
 				int stringHeightMargin = ((tileHeight - strHeight)/2) - (strHeight/3);
 				
-				e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
+				e.gc.setForeground(new Color(getDisplay(), 119, 110, 101)); // Set font color
 				
+				// If value is not zero, draw the string
 				if (value>0) {
 					e.gc.drawString(tileStr, stringWidthMargin, stringHeightMargin);
 				}
@@ -132,12 +132,6 @@ public class Game2048Tile extends Canvas {
 		}
 		return fontSize;
 	}
-	
-	public int getFontSize() {
-		return fontSize;
-	}
-
-	public void setFontSize(int fontSize) {
-		this.fontSize = fontSize;
-	}
 }
+	
+
