@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public abstract class AbsGameView extends Observable implements View, Runnable {
@@ -110,16 +111,17 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			});
 			
 			// Determine load button select action
-					loadButton.addSelectionListener(new SelectionListener() {
+			loadButton.addSelectionListener(new SelectionListener() {
 
-						@Override
-						public void widgetSelected(SelectionEvent arg0) {
-							loadGameFile();
-						}
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					loadGameFile();
+				}
 
-						@Override
-						public void widgetDefaultSelected(SelectionEvent arg0) {}
-					});
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+				}
+			});
 					
 			// Determine save button select action
 			saveButton.addSelectionListener(new SelectionListener() {
@@ -210,7 +212,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		    restartItem.setText("Restart Game");
 		    
 		    // Determine undo item select action
-		    restartItem.addSelectionListener(new SelectionListener() {
+		    undoItem.addSelectionListener(new SelectionListener() {
 				
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
@@ -287,57 +289,6 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		
 		// Method which initializes the game board
 		public abstract void initGameBoard(State state);
-		/*
-		private void initGameBoard(State state) {
-			// Game board
-			this.board = new Game2048Board(boardGroup, SWT.WRAP,state.getBoardSize(), state.getBoard());
-			this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
-			this.board.setFocus();
-
-			// TODO: find elegant way to display the board for the first time!!
-			shell.setMinimumSize(501, 401);
-			
-			display.addFilter(SWT.KeyUp, new Listener()
-		    {
-		        @Override
-		        public void handleEvent(Event e)
-		        {
-		            if (e.widget instanceof MazeTile && isChild(board, (Control) e.widget)) 
-		            {
-		            	switch (e.keyCode) {
-						case (SWT.ARROW_UP):
-							userCommand = GameAction.UP;
-							break;
-						case (SWT.ARROW_DOWN):
-							userCommand = GameAction.DOWN;
-							break;
-						case (SWT.ARROW_LEFT):
-							userCommand = GameAction.LEFT;
-							break;
-						case (SWT.ARROW_RIGHT):
-							userCommand = GameAction.RIGHT;
-							break;
-						default:
-							break;
-						}
-
-						if ((e.keyCode == SWT.ARROW_UP)
-								|| (e.keyCode == SWT.ARROW_DOWN)
-								|| (e.keyCode == SWT.ARROW_LEFT)
-								|| (e.keyCode == SWT.ARROW_RIGHT)) {
-							// raise a flag of a change
-							setChanged();
-							// actively notify all observers
-							// and invoke their update method
-							notifyObservers();
-						}
-		            }
-		        }
-		    });
-
-		}
-		*/
-		
 		
 		// Method which opens "save file" dialog and stores file name
 		private void saveGame() {
@@ -443,6 +394,30 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		public void setUserCommand(GameAction userCommand) {
 			this.userCommand = userCommand;
 		}
+		
+		// Method for handling game over
+		public void gameOver() {
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION| SWT.YES | SWT.NO);
+			messageBox.setMessage("GAME OVER: Start new game?");
+			messageBox.setText("Game Over");
+			int response = messageBox.open();
+			if (response == SWT.YES)
+				newGame();
+			else
+				System.exit(0);
+		}
+		
+		// Method for handling game winning
+		public void gameWin() {
+			MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION	| SWT.YES | SWT.NO);
+			messageBox.setMessage("Congratulations! You have won the game! Start new game?");
+			messageBox.setText("Game Win");
+			int response = messageBox.open();
+			if (response == SWT.YES)
+				newGame();
+			else
+				System.exit(0);
+	}
 		
 		protected static boolean isChild(Control parent, Control child)
 		{
