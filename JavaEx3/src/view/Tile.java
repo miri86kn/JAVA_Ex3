@@ -55,5 +55,7 @@ public class Tile extends Canvas{
 	}
 	
 
-	
+	public void changeBackgroundValue(Color color){
+		setBackground(color);
+	}
 }
