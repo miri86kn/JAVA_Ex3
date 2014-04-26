@@ -295,7 +295,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			FileDialog fd = new FileDialog(shell, SWT.SAVE);
 			fd.setText("Save Game");
 			fd.setFilterPath(System.getProperty("user.home"));
-			String[] filterExt = { ".xml" };
+			String[] filterExt = { "*.xml" };
 			fd.setFilterExtensions(filterExt);
 			String fileName = fd.open(); // Store selected file name as string
 			if (fileName != null) {
