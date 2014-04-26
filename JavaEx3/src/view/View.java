@@ -13,7 +13,9 @@ public interface View {
 		RESTART,
 		LOAD,
 		SAVE,
-		UNDO		
+		UNDO,
+		GAME_OVER,
+		GAME_WIN
 	};
 	
 	public void displayBoard(State data);
