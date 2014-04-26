@@ -18,7 +18,7 @@ public class GameMazeBoot {
 		
         //Test generation of new maze
 		GameMazeModel model =new GameMazeModel(8);
-		State stt = model.getCurrtState();
+		/*State stt = model.getCurrtState();
 		int[][] board = stt.getBoard();
 		
 		for(int i=0; i<board.length; i++)
@@ -31,7 +31,7 @@ public class GameMazeBoot {
 			 System.out.print(" ");
 			}
 			 System.out.print("\n");
-		}
+		}*/
 		
 
 		GameMazeView ui = new GameMazeView();

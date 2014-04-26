@@ -25,8 +25,8 @@ public class GameMazeTile extends Canvas {
 		// this.color = color;
 		this.value = 0;
 		
-		playerImage =  new Image(getDisplay(), "C:\\Users\\miri_k\\git\\JavaRep\\JavaEx3\\src\\view\\style\\kenny.jpg");  
-		exitImage =  new Image(getDisplay(), "C:\\Users\\miri_k\\git\\JavaRep\\JavaEx3\\src\\view\\style\\South_Park_sign_logo.png");
+		playerImage =  new Image(getDisplay(), "resources\\Images\\kenny.jpg");  
+		exitImage =  new Image(getDisplay(), "resources\\Images\\South_Park_sign_logo.png");
 		
 		addPaintListener(new PaintListener() {
 

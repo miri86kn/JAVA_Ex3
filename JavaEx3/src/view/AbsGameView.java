@@ -67,14 +67,14 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			undoButton.setText("Undo Move");
 			undoButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			undoButton.setFont(font);
-			Image imageBack = new Image(shell.getDisplay(), "src\\view\\style\\back.png");
+			Image imageBack = new Image(shell.getDisplay(), "resources\\Images\\back.png");
 			undoButton.setImage(imageBack);
 			
 			// Restart button
 			Button restartButton = new Button(buttonGroup, SWT.PUSH);
 			restartButton.setText("Restart Game");
 			restartButton.setFont(font);
-			Image imageRestart = new Image(shell.getDisplay(), "src\\view\\style\\undo.png");
+			Image imageRestart = new Image(shell.getDisplay(), "resources\\Images\\undo.png");
 			restartButton.setImage(imageRestart);
 			restartButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			
@@ -82,7 +82,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			Button loadButton = new Button(buttonGroup, SWT.PUSH);
 			loadButton.setText("Load Game");
 			loadButton.setFont(font);
-			Image imageLoad = new Image(shell.getDisplay(), "src\\view\\style\\folder.png");
+			Image imageLoad = new Image(shell.getDisplay(), "resources\\Images\\folder.png");
 			loadButton.setImage(imageLoad);
 			loadButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			
@@ -90,7 +90,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			Button saveButton = new Button(buttonGroup, SWT.PUSH);
 			saveButton.setText("Save Game");
 			saveButton.setFont(font);
-			Image imageSave = new Image(shell.getDisplay(), "src\\view\\style\\star.png");
+			Image imageSave = new Image(shell.getDisplay(), "resources\\Images\\star.png");
 			saveButton.setImage(imageSave);
 			saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			
