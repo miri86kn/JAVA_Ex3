@@ -34,22 +34,33 @@ public class Tile extends Canvas{
 
 			@Override
 			public void paintControl(PaintEvent e) {
+				int tileWidth = getSize().x;
+				int tileHeight = getSize().y;
+				
 				// Set string font properties
 				String tileStr = "" + value;
 				int fontSize = getFontSize(tileStr);
 				Font font = new Font(getDisplay(), "Tahoma", fontSize, SWT.BOLD);
 				e.gc.setFont(font);
-				FontMetrics fm = e.gc.getFontMetrics();
+				
+				//Eli's code
+				/*FontMetrics fm = e.gc.getFontMetrics();
 				int charHeight = fm.getHeight();
 				int charWidth = fm.getAverageCharWidth(); // One digit width
 				int numDigits = (tileStr.length()); // Number of digits
 				int mx = getSize().x/2 - numDigits * charWidth/2;
-				int my = getSize().y/2 - fm.getHeight()/2-fm.getDescent();
+				int my = getSize().y/2 - fm.getHeight()/2-fm.getDescent();*/
 				
-				//e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
-				e.gc.setForeground(new Color(getDisplay(), 0, 0, 0));
+				int strHeight = font.getFontData()[0].getHeight();
+		        int charWidth = (strHeight/2); // One digit width
+				int strWidth = charWidth*(tileStr.length()); // Whole string width, based on number of digits
+				int stringWidthMargin = ((tileWidth - strWidth)/2) - (strWidth/3) -2;
+				int stringHeightMargin = ((tileHeight - strHeight)/2) - (strHeight/3);
+				
+				e.gc.setForeground(new Color(getDisplay(), 119, 110, 101));
+				
 				if (value>0) {
-					e.gc.drawString(tileStr, mx, my);
+					e.gc.drawString(tileStr, stringWidthMargin, stringHeightMargin);
 				}
 				// font disposal after drawing the string
 				font.dispose();

@@ -30,15 +30,16 @@ public class Game2048Board extends Board {
 		boardData = data;
 
 		// Set board color
-		//Color boardColor = new Color(getDisplay(), 187, 173, 160);
-		Color boardColor = new Color(getDisplay(), 0, 0, 0);
+		Color boardColor = new Color(getDisplay(), 187, 173, 160);
+		
 		this.setBackground(boardColor);
+		this.setForeground(boardColor);
 		boardColor.dispose();
 
 		tiles= new Tile[rows][cols];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				tiles[i][j] = new Tile(this, SWT.BORDER);
+				tiles[i][j] = new Tile(this, SWT.BORDER_SOLID);
 				tiles[i][j].setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				tiles[i][j].setValue(boardData[i][j]);
 			}
