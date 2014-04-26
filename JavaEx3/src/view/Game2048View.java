@@ -15,10 +15,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -29,6 +33,7 @@ public class Game2048View extends Observable implements View, Runnable {
 	Shell shell;
 	Game2048Board board;
 	GameAction userCommand;
+
 	Group boardGroup;
 	Label scoreLbl;
 	Label bestScoreLbl;
@@ -293,73 +298,44 @@ public class Game2048View extends Observable implements View, Runnable {
 		// TODO: find elegant way to display the board for the first time!!
 		shell.setMinimumSize(501, 401);
 		
-		// update userCommand according to enum index
-		board.addKeyListener(new KeyListener() {
+		display.addFilter(SWT.KeyUp, new Listener()
+	    {
+	        @Override
+	        public void handleEvent(Event e)
+	        {
+	            if (e.widget instanceof Tile && isChild(board, (Control) e.widget)) 
+	            {
+	            	switch (e.keyCode) {
+					case (SWT.ARROW_UP):
+						userCommand = GameAction.UP;
+						break;
+					case (SWT.ARROW_DOWN):
+						userCommand = GameAction.DOWN;
+						break;
+					case (SWT.ARROW_LEFT):
+						userCommand = GameAction.LEFT;
+						break;
+					case (SWT.ARROW_RIGHT):
+						userCommand = GameAction.RIGHT;
+						break;
+					default:
+						break;
+					}
 
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-			}
+					if ((e.keyCode == SWT.ARROW_UP)
+							|| (e.keyCode == SWT.ARROW_DOWN)
+							|| (e.keyCode == SWT.ARROW_LEFT)
+							|| (e.keyCode == SWT.ARROW_RIGHT)) {
+						// raise a flag of a change
+						setChanged();
+						// actively notify all observers
+						// and invoke their update method
+						notifyObservers();
+					}
+	            }
+	        }
+	    });
 
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				switch (arg0.keyCode) {
-				case (SWT.ARROW_UP):
-					userCommand = GameAction.UP;
-					break;
-				case (SWT.ARROW_DOWN):
-					userCommand = GameAction.DOWN;
-					break;
-				case (SWT.ARROW_LEFT):
-					userCommand = GameAction.LEFT;
-					break;
-				case (SWT.ARROW_RIGHT):
-					userCommand = GameAction.RIGHT;
-					break;
-				default:
-					break;
-				}
-
-				if ((arg0.keyCode == SWT.ARROW_UP)
-						|| (arg0.keyCode == SWT.ARROW_DOWN)
-						|| (arg0.keyCode == SWT.ARROW_LEFT)
-						|| (arg0.keyCode == SWT.ARROW_RIGHT)) {
-					// raise a flag of a change
-					setChanged();
-					// actively notify all observers
-					// and invoke their update method
-					notifyObservers();
-				}
-			}
-		});
-
-		/*
-		 * board.addMouseListener(new MouseListener() {
-		 * 
-		 * @Override public void mouseUp(MouseEvent arg0) {
-		 * System.out.println("mouseUp");
-		 * 
-		 * }
-		 * 
-		 * @Override public void mouseDown(MouseEvent arg0) { if (arg0.stateMask
-		 * == SWT.MouseEnter) { System.out.println("mouseDown"); }
-		 * 
-		 * }
-		 * 
-		 * @Override public void mouseDoubleClick(MouseEvent arg0) {
-		 * System.out.println("mouseDubleClick");
-		 * 
-		 * } });
-		 */
-
-		/*
-		 * Listener listener = new Listener() { public void handleEvent(Event
-		 * event) { switch (event.type) { case ((SWT.MouseDown) ):
-		 * System.out.println("down:" + event); break; case SWT.MouseMove:
-		 * System.out.println("move:"+event); break; case SWT.MouseUp:
-		 * System.out.println("Up:"+event); break; } } };
-		 * board.addListener(SWT.MouseDown, listener);
-		 * board.addListener(SWT.MouseUp, listener);
-		 */
 	}
 	
 	// Method which opens "save file" dialog and stores file name
@@ -461,5 +437,22 @@ public class Game2048View extends Observable implements View, Runnable {
 	public void displayScore() {
 		scoreLbl.setText(String.valueOf(currState.getScore())); // display current score
 		bestScoreLbl.setText(String.valueOf(currState.getScore())); // TODO: display best score
+	}
+	
+	public void setUserCommand(GameAction userCommand) {
+		this.userCommand = userCommand;
+	}
+	
+	private static boolean isChild(Control parent, Control child)
+	{
+	    if (child.equals(parent))
+	        return true;
+
+	    Composite p = child.getParent();
+
+	    if (p != null)
+	        return isChild(parent, p);
+	    else
+	        return false;
 	}
 }

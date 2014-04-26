@@ -1,9 +1,8 @@
 package view;
 
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class Board extends Canvas {
+public abstract class Board extends Composite {
 	// Data Members
 	int[][] boardData; // the data of the board
 	
