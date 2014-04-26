@@ -9,8 +9,8 @@ public class GameMazeModel extends AbsModel {
 	public final int PLAYER = 2;
 	public final int EXIT = 3;
 	
-	public final int HORIZONTAL_MOVE_COAST = 10;
-	public final int DIAGONAL_MOVE_COAST = 10;
+	public final int HORIZONTAL_MOVE_COST = 10;
+	public final int DIAGONAL_MOVE_COST = 15;
 	
 	private int playerRow=-1; //first initialized on maze generation
 	private int playerCol=-1; //first initialized on maze generation
@@ -23,7 +23,7 @@ public class GameMazeModel extends AbsModel {
 	
 	private void movePlayer(int toRow, int toCol)
 	{
-		currState.getBoard()[playerRow][playerCol] = EMPTY;
+		currState.getBoard()[playerRow][playerCol] = EMPTY; // TODO: why?
 		playerRow=toRow;
 		playerCol=toCol;
 		currState.getBoard()[playerRow][playerCol] = PLAYER;
@@ -39,7 +39,7 @@ public class GameMazeModel extends AbsModel {
 			 movePlayer( playerRow-1, playerCol);
 			
 			//update score
-			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
 			
 			// raise a flag of a change
 			setChanged();
@@ -64,7 +64,7 @@ public class GameMazeModel extends AbsModel {
 			movePlayer(playerRow+1, playerCol);
 			
 			//update score
-			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
 			
 			// raise a flag of a change
 			setChanged();
@@ -89,7 +89,7 @@ public class GameMazeModel extends AbsModel {
 			movePlayer(playerRow, playerCol-1);
 			
 			//update score
-			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );	
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );	
 			
 			// raise a flag of a change
 			setChanged();
@@ -114,7 +114,7 @@ public class GameMazeModel extends AbsModel {
 			movePlayer(playerRow, playerCol+1);
 			
 			//update score
-			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COAST );
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
 			
 			// raise a flag of a change
 						setChanged();
@@ -137,7 +137,7 @@ public class GameMazeModel extends AbsModel {
 			//update current player position on board
 			movePlayer(playerRow-1, playerCol+1);
 			//update score
-			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);	
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
 			
 			// raise a flag of a change
 						setChanged();
@@ -161,7 +161,7 @@ public class GameMazeModel extends AbsModel {
 			movePlayer(playerRow-1,playerCol-1);
 			
 			//update score
-			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			// raise a flag of a change
 						setChanged();
@@ -184,7 +184,7 @@ public class GameMazeModel extends AbsModel {
 			//update current player position on board
 			movePlayer(playerRow+1, playerCol+1);
 			//update score
-			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			// raise a flag of a change
 						setChanged();
@@ -207,7 +207,7 @@ public class GameMazeModel extends AbsModel {
 			//update current player position on board
 			movePlayer(playerRow+1, playerCol-1);
 			//update score
-			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COAST);	
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
 			
 			// raise a flag of a change
 						setChanged();
@@ -231,11 +231,10 @@ public class GameMazeModel extends AbsModel {
 	
 	private boolean isMoveValid(int toRow,  int toCol)
 	{
-		
-		if ((0<=toRow && toRow<boardSize )&& (0<=toCol && toRow<toCol ))
-		{ //valid locations inside the board
-			
-			return (currState.board[toCol][toRow] != WALL); //if no wall - than ok, else -not ok
+		//valid locations inside the board
+		if ((toRow>=0 && toRow<boardSize ) && (toCol>=0 && toCol<boardSize ))
+		{ 
+			return (currState.board[toRow][toCol] != WALL); //if no wall - than ok, else -not ok
 		}
 		else
 			return false;
