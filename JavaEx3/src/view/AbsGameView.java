@@ -104,6 +104,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					newGame();
+					setBoardFocus();
 				}
 
 				@Override
@@ -116,6 +117,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					loadGameFile();
+					setBoardFocus();
 				}
 
 				@Override
@@ -129,6 +131,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					saveGame();
+					setBoardFocus();
 				}
 
 				@Override
@@ -142,6 +145,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					undoAction();
+					setBoardFocus();
 				}
 
 				@Override
@@ -432,6 +436,13 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		        return isChild(parent, p);
 		    else
 		        return false;
+		}
+		
+		// Method for resetting focus back to game board
+		private void setBoardFocus() {
+			if (board != null) {
+				board.setFocus();
+			}
 		}
 	
 		protected abstract void setShellText();
