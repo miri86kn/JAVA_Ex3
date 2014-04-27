@@ -54,12 +54,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow-1, playerCol))
 		{
-			 
+			//update score
+			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST ); 
+			
 			//update current player position on board
 			 movePlayer( playerRow-1, playerCol);
-			
-			//update score
-			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
 			
 			// raise a flag of a change
 			setChanged();
@@ -74,11 +73,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow+1, playerCol))
 		{
-			//update current player position on board
-			movePlayer(playerRow+1, playerCol);
-			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
+			
+			//update current player position on board
+			movePlayer(playerRow+1, playerCol);
 			
 			// raise a flag of a change
 			setChanged();
@@ -93,11 +92,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow, playerCol-1))
 		{
-			//update current player position on board
-			movePlayer(playerRow, playerCol-1);
-			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );	
+			
+			//update current player position on board
+			movePlayer(playerRow, playerCol-1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -112,11 +111,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow, playerCol+1))
 		{
-			//update current player position on board
-			movePlayer(playerRow, playerCol+1);
-			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
+			
+			//update current player position on board
+			movePlayer(playerRow, playerCol+1);
 
 			// raise a flag of a change
 			setChanged();
@@ -130,10 +129,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow-1, playerCol+1))
 		{
-			//update current player position on board
-			movePlayer(playerRow-1, playerCol+1);
 			//update score
-			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
+			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
+			
+			//update current player position on board
+			movePlayer(playerRow-1, playerCol+1);	
 			
 			// raise a flag of a change
 			setChanged();
@@ -147,11 +147,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow-1,  playerCol-1))
 		{
-			//update current player position on board
-			movePlayer(playerRow-1,playerCol-1);
-			
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
+			
+			//update current player position on board
+			movePlayer(playerRow-1,playerCol-1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -165,10 +165,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow+1, playerCol+1))
 		{
-			//update current player position on board
-			movePlayer(playerRow+1, playerCol+1);
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
+			
+			//update current player position on board
+			movePlayer(playerRow+1, playerCol+1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -182,10 +183,11 @@ public class GameMazeModel extends AbsModel {
 		//is the move valid
 		if (isMoveValid(playerRow+1, playerCol-1))
 		{
-			//update current player position on board
-			movePlayer(playerRow+1, playerCol-1);
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
+			
+			//update current player position on board
+			movePlayer(playerRow+1, playerCol-1);
 			
 			// raise a flag of a change
 			setChanged();
