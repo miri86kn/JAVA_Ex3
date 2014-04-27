@@ -31,7 +31,6 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		Shell shell;
 		AbsBoard board;
 		GameAction userCommand;
-
 		Group boardGroup;
 		Label scoreLbl;
 		Label bestScoreLbl;
@@ -246,6 +245,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		
 		// Method which initializes the board group
 		private void initBoardGroup() {
+			
 			// Group which wrap game board components
 		    boardGroup = new Group(shell, SWT.SHADOW_OUT);
 		    boardGroup.setLayout(new GridLayout(2, true));
@@ -253,21 +253,26 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		    Color shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
 		    boardGroup.setBackground(shellColor);
 		    
+		    // Font for score titles
+		    Font titleFont = new Font(shell.getDisplay(), "Tahoma", 10, SWT.BOLD);
+		    
 		    // Grid data for both score labels
 		    GridData labelData = new GridData();
 			labelData.widthHint = LABEL_DATA_WIDTH;					/* default width */
 			labelData.horizontalAlignment = SWT.FILL;	/* grow to fill available width */
 			
-			// Group which contains score text
+			// Group which contains score label
 		    final Group scoreGroup = new Group(boardGroup, SWT.SHADOW_OUT );
+		    scoreGroup.setFont(titleFont);
 		    scoreGroup.setText("SCORE");
 		    scoreGroup.setLayout(new GridLayout(1, true));
 		    scoreGroup.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false, 1, 1));
 		    scoreGroup.setBackground( new Color(shell.getDisplay(), 250, 248, 239));
-		    
-		    // Score text 
+		 
+		    // Font for score labels
 		    Font font = new Font(shell.getDisplay(), "Tahoma", 16, SWT.BOLD);
-		       
+		    
+		    // Score label   
 		    this.scoreLbl = new Label(scoreGroup, SWT.WRAP|SWT.BOLD);
 		    scoreLbl.setText("0");
 		    scoreLbl.setLayoutData(labelData);
@@ -278,6 +283,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		    
 		    // Group which contains best score label
 		    final Group bestScoreGroup = new Group(boardGroup, SWT.SHADOW_OUT);
+		    bestScoreGroup.setFont(titleFont);
 		    bestScoreGroup.setText("BEST");
 		    bestScoreGroup.setLayout(new GridLayout(1, true));
 		    bestScoreGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
