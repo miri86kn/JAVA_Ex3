@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class GameMazeModel extends AbsModel {
 
+	// Data Members
+	private int playerRow; 
+	private int playerCol; 
+	
+	// Constants
 	public final int EMPTY = 0;
 	public final int WALL = 1;
 	public final int PLAYER = 2;
@@ -12,23 +17,25 @@ public class GameMazeModel extends AbsModel {
 	public final int HORIZONTAL_MOVE_COST = 10;
 	public final int DIAGONAL_MOVE_COST = 15;
 	
-	private int playerRow=-1; //first initialized on maze generation
-	private int playerCol=-1; //first initialized on maze generation
+	// Methods
 	
-	
+	// GameMazeModel Constructor
 	public GameMazeModel(int boardSize){
 		super(boardSize);
+		playerRow = -1; //first initialized on maze generation
+		playerCol = -1; //first initialized on maze generation
 	}
 	
 	
 	private void movePlayer(int toRow, int toCol)
 	{
-		currState.getBoard()[playerRow][playerCol] = EMPTY;
+		currState.getBoard()[playerRow][playerCol] = EMPTY; // Mark the current player location as empty
 		playerRow=toRow;
 		playerCol=toCol;
 		
 		if (currState.getBoard()[playerRow][playerCol] != EXIT) {
 			currState.getBoard()[playerRow][playerCol] = PLAYER;
+			this.stateStack.push(getCurrtState().Clone()); //TODO
 		}
 		
 		//check if player reached exit
@@ -59,12 +66,6 @@ public class GameMazeModel extends AbsModel {
 			// actively notify all observers
 			// and invoke their update method
 			notifyObservers(); 
-			
-			//check if player reached exit
-			if(isGameWon())
-			{
-				
-			}
 		}
 	}
 
@@ -84,12 +85,6 @@ public class GameMazeModel extends AbsModel {
 			// actively notify all observers
 			// and invoke their update method
 			notifyObservers(); 
-						
-			//check if player reached exit
-			if(isGameWon())
-			{
-							
-			}
 		}
 	}
 
@@ -109,12 +104,6 @@ public class GameMazeModel extends AbsModel {
 			// actively notify all observers
 			// and invoke their update method
 			notifyObservers(); 
-									
-		    //check if player reached exit
-			if(isGameWon())
-			{
-										
-			}
 		}
 	}
 
@@ -128,18 +117,12 @@ public class GameMazeModel extends AbsModel {
 			
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
-			
+
 			// raise a flag of a change
-						setChanged();
-						// actively notify all observers
-						// and invoke their update method
-						notifyObservers(); 
-												
-					    //check if player reached exit
-						if(isGameWon())
-						{
-													
-						}
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers();
 		}
 	}
 
@@ -153,16 +136,10 @@ public class GameMazeModel extends AbsModel {
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
 			
 			// raise a flag of a change
-						setChanged();
-						// actively notify all observers
-						// and invoke their update method
-						notifyObservers(); 
-												
-					    //check if player reached exit
-						if(isGameWon())
-						{
-													
-						}
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers();
 		}
 	}
 
@@ -177,16 +154,10 @@ public class GameMazeModel extends AbsModel {
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			// raise a flag of a change
-						setChanged();
-						// actively notify all observers
-						// and invoke their update method
-						notifyObservers(); 
-												
-					    //check if player reached exit
-						if(isGameWon())
-						{
-													
-						}
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers();
 		}
 	}
 	
@@ -200,16 +171,10 @@ public class GameMazeModel extends AbsModel {
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			// raise a flag of a change
-						setChanged();
-						// actively notify all observers
-						// and invoke their update method
-						notifyObservers(); 
-												
-					    //check if player reached exit
-						if(isGameWon())
-						{
-													
-						}
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers();
 		}
 	}
 
@@ -223,22 +188,18 @@ public class GameMazeModel extends AbsModel {
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
 			
 			// raise a flag of a change
-						setChanged();
-						// actively notify all observers
-						// and invoke their update method
-						notifyObservers(); 
-												
-					    //check if player reached exit
-						if(isGameWon())
-						{
-													
-						}
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers();
 		}
 	}
+
 	@Override
 	public void initBoard() {
 		//generate new maze and  push it to current state
 		this.currState.setBoard(generateMazeByPrimAlgo(boardSize));
+		this.stateStack.push(getCurrtState().Clone());
 	}
 	
 	
@@ -247,7 +208,7 @@ public class GameMazeModel extends AbsModel {
 		//valid locations inside the board
 		if ((toRow>=0 && toRow<boardSize ) && (toCol>=0 && toCol<boardSize ))
 		{ 
-			return (currState.board[toRow][toCol] != WALL); //if no wall - than ok, else -not ok
+			return (currState.board[toRow][toCol] != WALL); //If no wall then OK, else move is not valid
 		}
 		else
 			return false;
