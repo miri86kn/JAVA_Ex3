@@ -66,8 +66,6 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 
 	@Override
 	public void saveGame(String path) {
-		
-		
 		//create xml from current game state
 		XStream xstream = new XStream();
 		String xml = xstream.toXML(new SaveGameData(this.currState, this.stateStack)); //this.currState
