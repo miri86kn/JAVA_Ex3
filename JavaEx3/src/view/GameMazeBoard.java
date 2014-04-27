@@ -15,6 +15,8 @@ public class GameMazeBoard extends AbsBoard {
 	int cols;
 	GameMazeTile tiles[][];
 
+	
+	private static final int SPACE_WIDTH = 2;
 	// Methods
 
 	// Game2048Board Constructor
@@ -25,7 +27,15 @@ public class GameMazeBoard extends AbsBoard {
 		this.rows = size;
 		this.cols = size;
 
-		setLayout(new GridLayout(cols, true));
+		GridLayout gl = new GridLayout();
+		gl.numColumns = cols;
+		gl.makeColumnsEqualWidth = true;
+		gl.marginWidth = SPACE_WIDTH;
+		gl.marginHeight = SPACE_WIDTH;
+		gl.verticalSpacing = SPACE_WIDTH;
+		gl.horizontalSpacing = SPACE_WIDTH;
+		
+		setLayout(gl);
 		
 		// Initialize the 2d array
 		boardData = data;
