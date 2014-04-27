@@ -35,7 +35,7 @@ public class GameMazeModel extends AbsModel {
 		
 		if (currState.getBoard()[playerRow][playerCol] != EXIT) {
 			currState.getBoard()[playerRow][playerCol] = PLAYER;
-			this.stateStack.add(getCurrtState().Clone()); //TODO
+			this.stateStack.add(getCurrtState().Clone()); // Add current state to state stack
 		}
 		
 		//check if player reached exit
