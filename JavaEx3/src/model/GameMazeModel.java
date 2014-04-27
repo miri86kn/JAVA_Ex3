@@ -35,7 +35,7 @@ public class GameMazeModel extends AbsModel {
 		
 		if (currState.getBoard()[playerRow][playerCol] != EXIT) {
 			currState.getBoard()[playerRow][playerCol] = PLAYER;
-			this.stateStack.push(getCurrtState().Clone()); //TODO
+			this.stateStack.add(getCurrtState().Clone()); //TODO
 		}
 		
 		//check if player reached exit
@@ -199,7 +199,7 @@ public class GameMazeModel extends AbsModel {
 	public void initBoard() {
 		//generate new maze and  push it to current state
 		this.currState.setBoard(generateMazeByPrimAlgo(boardSize));
-		this.stateStack.push(getCurrtState().Clone());
+		this.stateStack.add(getCurrtState().Clone());
 	}
 	
 	
