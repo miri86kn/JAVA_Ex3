@@ -29,6 +29,7 @@ public class Game2048View extends AbsGameView {
 	        {
 	            if (e.widget instanceof Game2048Tile && isChild(board, (Control) e.widget)) 
 	            {
+	            	
 	            	switch (e.keyCode) {
 					case (SWT.ARROW_UP):
 						userCommand = GameAction.UP;

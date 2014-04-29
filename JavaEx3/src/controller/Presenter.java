@@ -25,6 +25,18 @@ public class Presenter implements Observer {
 			View.GameAction command = ui.getUserCommand();
 			// process user command from ui
 			switch (command) {
+			case UP_LEFT:
+				model.moveUpLeft();
+				break;
+			case UP_RIGHT:
+				model.moveUpRight();
+				break;
+			case DOWN_LEFT:
+				model.moveDownLeft();
+				break;
+			case DOWN_RIGHT:
+				model.moveDownRight();
+				break;
 			case LEFT:
 				model.moveLeft();
 				break;

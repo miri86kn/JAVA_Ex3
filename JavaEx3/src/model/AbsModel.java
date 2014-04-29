@@ -50,13 +50,24 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 			return;
 		
 		State s = this.stateStack.pop();
+		
+		
 		if (s.equals(this.currState))
+		{
 			if(!this.stateStack.isEmpty())
 				this.currState = this.stateStack.pop();
 			else
+			{
+				if(stateStack.size() == 0)
+					this.stateStack.push(currState.Clone());
 				return;
+			}
+		}
 		else
 			this.currState =s;
+		
+		if(stateStack.size() == 0)
+			this.stateStack.push(currState.Clone());
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
@@ -80,26 +91,7 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 		} 		
 	}
 
-	@Override
-	public void loadGame(String path) {
-		try {
-		XStream xstream = new XStream();
-		InputStream in = new FileInputStream(path);
-		SaveGameData loadedGame = (SaveGameData)xstream.fromXML(in);
-		this.currState = loadedGame.getCurrentState();
-		this.stateStack = loadedGame.getStateStack();
-		
-		// raise a flag of a change
-		setChanged();
-		// actively notify all observers
-		// and invoke their update method
-		notifyObservers(); 
-		} 
-		catch (IOException e) {
-		    e.printStackTrace();
-		}
-	}
-
+	
 	@Override
 	//create new game
 	public void newGame() {
@@ -123,5 +115,23 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 		return this.currState;
 	}
 
-	
+	@Override
+	public void loadGame(String path) {
+		try {
+		XStream xstream = new XStream();
+		InputStream in = new FileInputStream(path);
+		SaveGameData loadedGame = (SaveGameData)xstream.fromXML(in);
+		this.currState = loadedGame.getCurrentState();
+		this.stateStack = loadedGame.getStateStack();
+		
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
+		} 
+		catch (IOException e) {
+		    e.printStackTrace();
+		}
+	}
 }

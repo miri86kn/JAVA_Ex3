@@ -1,7 +1,12 @@
 package model;
 
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
+
+import com.thoughtworks.xstream.XStream;
 
 
 
@@ -27,11 +32,11 @@ public class Game2048Model extends AbsModel {
 			for(int j=0; j<this.boardSize; j++)
 			{
 				//cell and previous cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i+1][j])
+				if (this.currState.getBoard()[i][j] == this.currState.getBoard()[i+1][j])
 				{
-					this.currState.board[i][j] += this.currState.board[i+1][j]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i+1][j]); //add to game score
-					this.currState.board[i+1][j] = this.EMPTY_CELL;
+					this.currState.getBoard()[i][j] += this.currState.getBoard()[i+1][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.getBoard()[i+1][j]); //add to game score
+					this.currState.getBoard()[i+1][j] = this.EMPTY_CELL;
 					pushAllUp();
 					boardChanged = pushAllUp() || boardChanged;
 				}
@@ -61,11 +66,11 @@ public class Game2048Model extends AbsModel {
 			for(int j=0; j<this.boardSize; j++)
 			{
 				//cell and next cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i-1][j])
+				if (this.currState.getBoard()[i][j] == this.currState.getBoard()[i-1][j])
 				{
-					this.currState.board[i][j] += this.currState.board[i-1][j]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i-1][j]); //add to game score
-					this.currState.board[i-1][j] = this.EMPTY_CELL;
+					this.currState.getBoard()[i][j] += this.currState.getBoard()[i-1][j]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.getBoard()[i-1][j]); //add to game score
+					this.currState.getBoard()[i-1][j] = this.EMPTY_CELL;
 					boardChanged= pushAllDown() || boardChanged;
 				}
 			}
@@ -91,11 +96,11 @@ public class Game2048Model extends AbsModel {
 			for(int j=0; j<this.boardSize-1; j++)
 			{
 				//cell and previous cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i][j+1])
+				if (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j+1])
 				{
-					this.currState.board[i][j] += this.currState.board[i][j+1]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j+1]); //add to game score
-					this.currState.board[i][j+1] = this.EMPTY_CELL;
+					this.currState.getBoard()[i][j] += this.currState.getBoard()[i][j+1]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.getBoard()[i][j+1]); //add to game score
+					this.currState.getBoard()[i][j+1] = this.EMPTY_CELL;
 					boardChanged = pushAllLeft() || boardChanged;
 				}
 			}
@@ -121,11 +126,11 @@ public class Game2048Model extends AbsModel {
 			for(int j=this.boardSize-1; j>0; j--)
 			{
 				//cell and previous cell are the same number --> add
-				if (this.currState.board[i][j] == this.currState.board[i][j-1])
+				if (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j-1])
 				{
-					this.currState.board[i][j] += this.currState.board[i][j-1]; //add cells
-					this.currState.setScore(this.currState.getScore() + this.currState.board[i][j-1]); //add to game score
-					this.currState.board[i][j-1] = this.EMPTY_CELL;
+					this.currState.getBoard()[i][j] += this.currState.getBoard()[i][j-1]; //add cells
+					this.currState.setScore(this.currState.getScore() + this.currState.getBoard()[i][j-1]); //add to game score
+					this.currState.getBoard()[i][j-1] = this.EMPTY_CELL;
 					boardChanged = pushAllRigth() || boardChanged ;
 				}
 			}
@@ -151,7 +156,7 @@ public class Game2048Model extends AbsModel {
 		{
 			for (int j=0; j< this.boardSize; j++)
 			{
-				this.currState.board[i][j] = this.EMPTY_CELL;
+				this.currState.getBoard()[i][j] = this.EMPTY_CELL;
 			}
 		}
 		//add 2 random numbers to the board
@@ -172,9 +177,9 @@ public class Game2048Model extends AbsModel {
 			int col = rand.nextInt(this.boardSize);
 			//just check location to be sure
 			validLocation = (row>=0 && row < this.boardSize && col >=0 && col<this.boardSize) //location is in the board
-							&& (this.currState.board[row][col] == this.EMPTY_CELL); //cell is empty
+							&& (this.currState.getBoard()[row][col] == this.EMPTY_CELL); //cell is empty
 			if(validLocation)
-				this.currState.board[row][col] = getNewRandomNumber(); //set there new random number
+				this.currState.getBoard()[row][col] = getNewRandomNumber(); //set there new random number
 		}
 	}
 	
@@ -192,10 +197,10 @@ public class Game2048Model extends AbsModel {
 		{
 			for(int j=0; j<boardSize-1; j++)
 			{
-				if (currState.board[i][j+1] == EMPTY_CELL)
+				if (currState.getBoard()[i][j+1] == EMPTY_CELL)
 				{	
-					currState.board[i][j+1] =currState.board[i][j];
-					currState.board[i][j] = EMPTY_CELL;
+					currState.getBoard()[i][j+1] =currState.getBoard()[i][j];
+					currState.getBoard()[i][j] = EMPTY_CELL;
 					if(!boardChanged) 
 						boardChanged=true;
 				}
@@ -211,10 +216,10 @@ public class Game2048Model extends AbsModel {
 		{
 			for(int j=boardSize-1; j>0; j--)
 			{
-				if (currState.board[i][j-1] == EMPTY_CELL)
+				if (currState.getBoard()[i][j-1] == EMPTY_CELL)
 				{	
-					currState.board[i][j-1] =currState.board[i][j];
-					currState.board[i][j] = EMPTY_CELL;
+					currState.getBoard()[i][j-1] =currState.getBoard()[i][j];
+					currState.getBoard()[i][j] = EMPTY_CELL;
 					if(!boardChanged) 
 						boardChanged=true;
 				}
@@ -230,10 +235,10 @@ public class Game2048Model extends AbsModel {
 		{
 			for(int j=0; j<boardSize; j++)
 			{
-				if (currState.board[i-1][j] == EMPTY_CELL)
+				if (currState.getBoard()[i-1][j] == EMPTY_CELL)
 				{	
-					currState.board[i-1][j] =currState.board[i][j];
-					currState.board[i][j] = EMPTY_CELL;
+					currState.getBoard()[i-1][j] =currState.getBoard()[i][j];
+					currState.getBoard()[i][j] = EMPTY_CELL;
 					if(!boardChanged) 
 						boardChanged=true;
 				}
@@ -249,10 +254,10 @@ public class Game2048Model extends AbsModel {
 		{
 			for(int j=0; j<boardSize; j++)
 			{
-				if (currState.board[i+1][j] == EMPTY_CELL)
+				if (currState.getBoard()[i+1][j] == EMPTY_CELL)
 				{	
-					currState.board[i+1][j] =currState.board[i][j];
-					currState.board[i][j] = EMPTY_CELL;
+					currState.getBoard()[i+1][j] =currState.getBoard()[i][j];
+					currState.getBoard()[i][j] = EMPTY_CELL;
 					if(!boardChanged) 
 						boardChanged=true;
 				}
@@ -274,7 +279,7 @@ public class Game2048Model extends AbsModel {
 		for(int i=0; i< boardSize; i++)
 			for(int j=0; j< boardSize; j++)
 			{
-				if (this.currState.board[i][j] == WINNIG_NUMBER)
+				if (this.currState.getBoard()[i][j] == WINNIG_NUMBER)
 					return true;
 			}
 		return false;
@@ -286,7 +291,7 @@ public class Game2048Model extends AbsModel {
 		for(int i=0; i< boardSize; i++)
 			for(int j=0; j< boardSize; j++)
 			{
-				if (this.currState.board[i][j] == EMPTY_CELL)
+				if (this.currState.getBoard()[i][j] == EMPTY_CELL)
 				{
 						emptyCellExists= true;
 						break;
@@ -296,8 +301,8 @@ public class Game2048Model extends AbsModel {
 			for(int i=0; i< boardSize-1; i++)
 				for(int j=0; j< boardSize-1; j++)
 				{
-					similarNumbersExists = (this.currState.board[i][j] == this.currState.board[i][j+1])
-							|| (this.currState.board[i][j] == this.currState.board[i][j-1]);
+					similarNumbersExists = (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j+1])
+							|| (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j-1]);
 					if (similarNumbersExists)
 						return false;
 				}
@@ -305,5 +310,36 @@ public class Game2048Model extends AbsModel {
 		}
 		return false;
 	}
+
+
+	@Override
+	public void moveUpRight() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void moveUpLeft() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void moveDownRight() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void moveDownLeft() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+
 }
 

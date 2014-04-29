@@ -85,7 +85,19 @@ public class Game2048Tile extends Canvas {
 	public void changeBackgroundColor(){
 		// Set background color
 		Color tileColor;
+		int r,g,b;
+		r=(242)%255;
+		g=Math.abs((255-value*10))%255;
+		b=(180)%255;
 		switch (value) {
+		case 0://no number
+			tileColor= new Color(getDisplay(), 204, 192, 179);
+		    break;
+		default://nuber->set color by value    
+			tileColor= new Color(getDisplay(), r, g, b);
+			break;
+		}
+		/*switch (value) {
 			case 0:
 				tileColor= new Color(getDisplay(), 204, 192, 179);
 			    break;
@@ -107,9 +119,10 @@ public class Game2048Tile extends Canvas {
 			default:
 				tileColor= new Color(getDisplay(), 220, 186, 49);
 			  break;
-		}
+		}*/
 		setBackground(tileColor);
 	}
+	
 	
 	// Calculate font size according to number of digits
 	private int getFontSize(String cellStr) {

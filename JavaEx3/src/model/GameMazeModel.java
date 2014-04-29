@@ -1,12 +1,17 @@
 package model;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import com.thoughtworks.xstream.XStream;
 
 
 public class GameMazeModel extends AbsModel {
 
 	// Data Members
-	private int playerRow; 
-	private int playerCol; 
+	//private int playerRow; 
+	//private int playerCol; 
 	
 	// Constants
 	public final int EMPTY = 0;
@@ -22,21 +27,23 @@ public class GameMazeModel extends AbsModel {
 	// GameMazeModel Constructor
 	public GameMazeModel(int boardSize){
 		super(boardSize);
-		playerRow = -1; //first initialized on maze generation
-		playerCol = -1; //first initialized on maze generation
+		
 	}
 	
 	
 	private void movePlayer(int toRow, int toCol)
 	{
-		currState.getBoard()[playerRow][playerCol] = EMPTY; // Mark the current player location as empty
-		playerRow=toRow;
-		playerCol=toCol;
+		currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] = EMPTY; // Mark the current player location as empty
+		currState.setPlayerPosition(toRow, toCol);
 		
-		if (currState.getBoard()[playerRow][playerCol] != EXIT) {
-			currState.getBoard()[playerRow][playerCol] = PLAYER;
+		
+		
+		if (currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] != EXIT) {
+			currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] = PLAYER;
 			this.stateStack.add(getCurrtState().Clone()); // Add current state to state stack
 		}
+		
+		//this.stateStack.add(getCurrtState().Clone()); // Add current state to state stack
 		
 		//check if player reached exit
 		if(isGameWon())
@@ -52,13 +59,13 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveUp() {
 		//is the move valid
-		if (isMoveValid(playerRow-1, playerCol))
+		if (isMoveValid(currState.getPlayerRow()-1, currState.getPlayerCol()))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST ); 
 			
 			//update current player position on board
-			 movePlayer( playerRow-1, playerCol);
+			 movePlayer( currState.getPlayerRow()-1, currState.getPlayerCol());
 			
 			// raise a flag of a change
 			setChanged();
@@ -71,13 +78,13 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveDown() {
 		//is the move valid
-		if (isMoveValid(playerRow+1, playerCol))
+		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
 			
 			//update current player position on board
-			movePlayer(playerRow+1, playerCol);
+			movePlayer(currState.getPlayerRow()+1, currState.getPlayerCol());
 			
 			// raise a flag of a change
 			setChanged();
@@ -90,13 +97,13 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveLeft() {
 		//is the move valid
-		if (isMoveValid(playerRow, playerCol-1))
+		if (isMoveValid(currState.getPlayerRow(), currState.getPlayerCol()-1))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );	
 			
 			//update current player position on board
-			movePlayer(playerRow, playerCol-1);
+			movePlayer(currState.getPlayerRow(), currState.getPlayerCol()-1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -109,13 +116,13 @@ public class GameMazeModel extends AbsModel {
 	@Override
 	public void moveRight() {
 		//is the move valid
-		if (isMoveValid(playerRow, playerCol+1))
+		if (isMoveValid(currState.getPlayerRow(), currState.getPlayerCol()+1))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + HORIZONTAL_MOVE_COST );
 			
 			//update current player position on board
-			movePlayer(playerRow, playerCol+1);
+			movePlayer(currState.getPlayerRow(), currState.getPlayerCol()+1);
 
 			// raise a flag of a change
 			setChanged();
@@ -127,13 +134,13 @@ public class GameMazeModel extends AbsModel {
 
 	public void moveUpRight() {
 		//is the move valid
-		if (isMoveValid(playerRow-1, playerCol+1))
+		if (isMoveValid(currState.getPlayerRow()-1, currState.getPlayerCol()+1))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			//update current player position on board
-			movePlayer(playerRow-1, playerCol+1);	
+			movePlayer(currState.getPlayerRow()-1, currState.getPlayerCol()+1);	
 			
 			// raise a flag of a change
 			setChanged();
@@ -145,13 +152,13 @@ public class GameMazeModel extends AbsModel {
 
 	public void moveUpLeft() {
 		//is the move valid
-		if (isMoveValid(playerRow-1,  playerCol-1))
+		if (isMoveValid(currState.getPlayerRow()-1,  currState.getPlayerCol()-1))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			//update current player position on board
-			movePlayer(playerRow-1,playerCol-1);
+			movePlayer(currState.getPlayerRow()-1,currState.getPlayerCol()-1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -163,13 +170,13 @@ public class GameMazeModel extends AbsModel {
 	
 	public void moveDownRight() {
 		//is the move valid
-		if (isMoveValid(playerRow+1, playerCol+1))
+		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()+1))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);
 			
 			//update current player position on board
-			movePlayer(playerRow+1, playerCol+1);
+			movePlayer(currState.getPlayerRow()+1, currState.getPlayerCol()+1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -181,13 +188,13 @@ public class GameMazeModel extends AbsModel {
 
 	public void moveDownLeft() {
 		//is the move valid
-		if (isMoveValid(playerRow+1, playerCol-1))
+		if (isMoveValid(currState.getPlayerRow()+1, currState.getPlayerCol()-1))
 		{
 			//update score
 			this.currState.setScore(this.currState.getScore() + DIAGONAL_MOVE_COST);	
 			
 			//update current player position on board
-			movePlayer(playerRow+1, playerCol-1);
+			movePlayer(currState.getPlayerRow()+1, currState.getPlayerCol()-1);
 			
 			// raise a flag of a change
 			setChanged();
@@ -201,7 +208,7 @@ public class GameMazeModel extends AbsModel {
 	public void initBoard() {
 		//generate new maze and  push it to current state
 		this.currState.setBoard(generateMazeByPrimAlgo(boardSize));
-		this.stateStack.add(getCurrtState().Clone());
+		
 	}
 	
 	
@@ -210,7 +217,7 @@ public class GameMazeModel extends AbsModel {
 		//valid locations inside the board
 		if ((toRow>=0 && toRow<boardSize ) && (toCol>=0 && toCol<boardSize ))
 		{ 
-			return (currState.board[toRow][toCol] != WALL); //If no wall then OK, else move is not valid
+			return (currState.getBoard()[toRow][toCol] != WALL); //If no wall then OK, else move is not valid
 		}
 		else
 			return false;
@@ -219,7 +226,7 @@ public class GameMazeModel extends AbsModel {
 	
 	private boolean isGameWon(){
 		//is current player location the exit
-		return currState.getBoard()[playerRow][playerCol] ==  EXIT;
+		return currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] ==  EXIT;
 	}
 	
 	@Override
@@ -319,8 +326,8 @@ public class GameMazeModel extends AbsModel {
 					else if (maz[i][j] == 'S')
 					{
 						maze[i][j] = PLAYER;
-						playerRow =i;
-						playerCol=j;
+						this.currState.setPlayerPosition(i, j); //init player position at starting point
+						
 					}
 					else if (maz[i][j] == 'E')
 						maze[i][j] = EXIT;
@@ -351,5 +358,27 @@ public class GameMazeModel extends AbsModel {
     	}
     }
 	  
+    @Override
+	public void loadGame(String path) {
+		try {
+		XStream xstream = new XStream();
+		InputStream in = new FileInputStream(path);
+		SaveGameData loadedGame = (SaveGameData)xstream.fromXML(in);
+		this.currState = loadedGame.getCurrentState();
+		this.stateStack = loadedGame.getStateStack();
+		
+		for(int i=0; i<this.currState.getBoardSize(); i++)
+			for(int j=0; i<this.currState.getBoardSize(); i++)
+		
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		notifyObservers(); 
+		} 
+		catch (IOException e) {
+		    e.printStackTrace();
+		}
+	}
 
 }

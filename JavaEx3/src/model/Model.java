@@ -14,5 +14,8 @@ public interface Model {
 	public void newGame(); //generate new game
 	public State getCurrtState();
 	public void initBoard();
-	
+	public void moveUpRight();
+	public void moveUpLeft();
+	public void moveDownRight();
+	public void moveDownLeft();
 }

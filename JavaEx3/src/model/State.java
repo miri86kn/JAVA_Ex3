@@ -2,10 +2,23 @@ package model;
 
 public class State {
 	
-	int[][] board;
-	int score;
+	private int[][] board;
+	private int score;
+	private int playerRow;
+	private int playerCol;
 	
-	
+	public void setPlayerPosition(int row, int col){
+		this.playerCol = col;
+		this.playerRow=row;
+	}
+	public int getPlayerCol()
+	{
+		return playerCol;
+	}
+	public int getPlayerRow()
+	{
+		return playerRow;
+	}
 	public int[][] getBoard() {
 		return board;
 	}
@@ -41,6 +54,7 @@ public class State {
 				board[i][j] = this.board[i][j];
 		newS.setBoard(board);
 		newS.setScore(this.score);
+		newS.setPlayerPosition(this.playerRow, this.playerCol);
 		return newS;
 	}
 	
@@ -53,6 +67,6 @@ public class State {
 			for(int j=0; j<board.length; j++)
 				if (s.board[i][j] != board[i][j])
 					return false;
-		return this.score == s.score;
+		return this.score == s.score && this.playerCol == s.playerCol && this.playerRow==s.playerRow;
 	}
 }
