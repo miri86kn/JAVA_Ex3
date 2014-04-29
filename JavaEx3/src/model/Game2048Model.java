@@ -1,12 +1,7 @@
 package model;
 
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Random;
-
-import com.thoughtworks.xstream.XStream;
 
 
 

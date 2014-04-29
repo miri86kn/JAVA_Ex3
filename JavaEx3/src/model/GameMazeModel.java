@@ -358,27 +358,6 @@ public class GameMazeModel extends AbsModel {
     	}
     }
 	  
-    @Override
-	public void loadGame(String path) {
-		try {
-		XStream xstream = new XStream();
-		InputStream in = new FileInputStream(path);
-		SaveGameData loadedGame = (SaveGameData)xstream.fromXML(in);
-		this.currState = loadedGame.getCurrentState();
-		this.stateStack = loadedGame.getStateStack();
-		
-		for(int i=0; i<this.currState.getBoardSize(); i++)
-			for(int j=0; i<this.currState.getBoardSize(); i++)
-		
-		// raise a flag of a change
-		setChanged();
-		// actively notify all observers
-		// and invoke their update method
-		notifyObservers(); 
-		} 
-		catch (IOException e) {
-		    e.printStackTrace();
-		}
-	}
+   
 
 }
