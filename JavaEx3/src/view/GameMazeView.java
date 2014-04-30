@@ -13,12 +13,16 @@ import org.eclipse.swt.widgets.Listener;
 
 public class GameMazeView extends AbsGameView {
 	
-	private boolean upPressed, downPressed, leftPressd, rightPressed;
-	private boolean diagonal;
+
+	
+	private int vertical; // -1 for up, 0 for nothing, 1 for down  
+	private int horizontal; // -1 for left, 0 for nothing, 1 for right 
+	private int pressedCount;
+	
 	// Method which initializes the game board
 	@Override
 	public void initGameBoard(State state) {
-		upPressed= downPressed= leftPressd= rightPressed=diagonal=false;
+		
 		// Game board
 		this.board = new GameMazeBoard(boardGroup, SWT.WRAP,state.getBoardSize(), state.getBoard());
 		this.board.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
@@ -32,83 +36,73 @@ public class GameMazeView extends AbsGameView {
 	        @Override
 	        public void handleEvent(Event e)
 	        {
+	        	
 	            if (e.widget instanceof GameMazeTile && isChild(board, (Control) e.widget)) 
 	            {
+	            	
+	            	
+	            	boolean change= true;
+	            	
+	            	
+	            	//horizonatal: -1:left 0:nothing 1:right
+	            	//vertical:    -1:up   0:nothing 1:right
+	            	if (horizontal < 0 && vertical < 0) // up and left  
+	            	{	
+	            		userCommand = GameAction.UP_LEFT; pressedCount--;}
+	            	else if(horizontal < 0 && vertical > 0) //down and left
+	            	{	
+	            		userCommand = GameAction.DOWN_LEFT; pressedCount--;}
+	            	else if(horizontal > 0 && vertical < 0) //up and right
+	            	{	
+	            		userCommand = GameAction.UP_RIGHT; pressedCount--;}
+	            	else if(horizontal > 0 && vertical > 0) //down and right
+	            	{	
+	            		userCommand = GameAction.DOWN_RIGHT; pressedCount--;}
+	            	else if(horizontal > 0 && vertical == 0 && pressedCount==1) //right
+	            		userCommand = GameAction.RIGHT;
+	            	else if(horizontal < 0 && vertical == 0 && pressedCount==1) //left
+	            		userCommand = GameAction.LEFT;
+	            	else if(horizontal == 0 && vertical < 0 && pressedCount==1) //up
+	            		userCommand = GameAction.UP;
+	            	else if(horizontal == 0 && vertical > 0 && pressedCount==1) //down
+	            		userCommand = GameAction.DOWN;
+	            	else
+	            	{
+	            		change=false;
+	            	}
+	            	
 	            	switch (e.keyCode) {
 					
-	            	case (SWT.ARROW_UP):
-						if(leftPressd)
-						{
-							userCommand = GameAction.UP_LEFT;
-							//leftPressd=false;
-						}
-						else if(rightPressed)
-						{
-							userCommand = GameAction.UP_RIGHT;
-							//rightPressed = false;
-						}
-						else if(upPressed && !(leftPressd||rightPressed))
-							userCommand = GameAction.UP;
-	            		upPressed=false;	
-	            		break;
-					case (SWT.ARROW_DOWN):
-						if(leftPressd)
-						{
-							userCommand = GameAction.DOWN_LEFT;
-							//leftPressd = false;
-						}
-						else if(rightPressed)
-						{
-							userCommand = GameAction.DOWN_RIGHT;
-							//rightPressed = false;
-						}
-						else if(downPressed && !(leftPressd||rightPressed))
-							userCommand = GameAction.DOWN;
-					    downPressed=false;
-						break;
-					case (SWT.ARROW_LEFT):
-						if(upPressed)
-						{
-							userCommand = GameAction.UP_LEFT;
-							//upPressed=false;
-						}
-						else if(downPressed)
-						{
-							userCommand = GameAction.DOWN_LEFT;
-							//downPressed= false;
-						}
-						else if(leftPressd && !(upPressed || downPressed))
-							userCommand = GameAction.LEFT;
-						leftPressd=false;
-						break;
-					case (SWT.ARROW_RIGHT):
-						if(upPressed)
-						{
-							userCommand = GameAction.UP_RIGHT;
-							//upPressed=false;
-						}
-						else if (downPressed)
-						{
-							userCommand = GameAction.DOWN_RIGHT;
-							//downPressed=false;
-						}
-						else if (rightPressed && !(upPressed || downPressed))
-							userCommand = GameAction.RIGHT;
-					    rightPressed=false;
-					break;
-					default:
-						break;
+		            	case (SWT.ARROW_UP):
+		            		vertical++;
+		            		break;
+						case (SWT.ARROW_DOWN):
+						    vertical--;
+							break;
+						case (SWT.ARROW_LEFT):
+							horizontal++;
+							break;
+						case (SWT.ARROW_RIGHT):
+							horizontal--;
+							break;
+						default:
+							break;
 					}
-
+	            	
 					if ((e.keyCode == SWT.ARROW_UP)
 							|| (e.keyCode == SWT.ARROW_DOWN)
 							|| (e.keyCode == SWT.ARROW_LEFT)
-							|| (e.keyCode == SWT.ARROW_RIGHT)) {
-						// raise a flag of a change
+							|| (e.keyCode == SWT.ARROW_RIGHT) ) {
+						
+						if(change)
+						{
+						pressedCount--;
+							// raise a flag of a change
 						setChanged();
 						// actively notify all observers
 						// and invoke their update method
 						notifyObservers();
+						}
 					}
 	            }
 	        }
@@ -122,23 +116,29 @@ public class GameMazeView extends AbsGameView {
 	        {
 	            if (e.widget instanceof GameMazeTile && isChild(board, (Control) e.widget)) 
 	            {
+	            	if (pressedCount<0)
+	            		pressedCount=0;
 	            	switch (e.keyCode) {
-					
-	            	case (SWT.ARROW_UP):
-						upPressed=true;
-						break;
-					case (SWT.ARROW_DOWN):
-						downPressed=true;
-						break;
-					case (SWT.ARROW_LEFT):
-						leftPressd=true;
-						break;
-					case (SWT.ARROW_RIGHT):
-						rightPressed=true;
-						break;
-					default:
-						break;
+		            	case (SWT.ARROW_UP):
+		            		vertical--;	
+		            		break;
+						case (SWT.ARROW_DOWN):
+						    vertical++;
+							break;
+						case (SWT.ARROW_LEFT):
+							horizontal--;
+							break;
+						case (SWT.ARROW_RIGHT):
+							horizontal++;
+							break;
+						default:
+							break;
 					}
+	            	if((e.keyCode == SWT.ARROW_UP)
+							|| (e.keyCode == SWT.ARROW_DOWN)
+							|| (e.keyCode == SWT.ARROW_LEFT)
+							|| (e.keyCode == SWT.ARROW_RIGHT) )
+	            		pressedCount++;
 	            }
 	        }
 	    });
