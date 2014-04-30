@@ -93,7 +93,7 @@ public class Game2048Tile extends Canvas {
 		case 0://no number
 			tileColor= new Color(getDisplay(), 204, 192, 179);
 		    break;
-		default://nuber->set color by value    
+		default://number->set color by value    
 			tileColor= new Color(getDisplay(), r, g, b);
 			break;
 		}

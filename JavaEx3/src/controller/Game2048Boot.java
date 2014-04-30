@@ -1,7 +1,7 @@
 package controller;
 
-import view.Game2048View;
 import model.Game2048Model;
+import view.Game2048View;
 
 public class Game2048Boot {
 

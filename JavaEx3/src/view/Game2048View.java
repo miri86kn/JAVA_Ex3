@@ -3,6 +3,9 @@ package view;
 import model.State;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -11,6 +14,7 @@ import org.eclipse.swt.widgets.Listener;
 
 public class Game2048View extends AbsGameView {
 	
+	private Point startDrag, endDrag;
 	// Method which initializes the game board
 	@Override
 	public void initGameBoard(State state) {
@@ -61,6 +65,60 @@ public class Game2048View extends AbsGameView {
 	        }
 	    });
 
+		display.addFilter(SWT.MouseDown, new Listener() {
+			
+			@Override
+			public void handleEvent(Event e) {
+				if (e.widget instanceof Game2048Tile && isChild(board, (Control) e.widget)) 
+				{
+				 startDrag = new Point(e.x, e.y); 
+				 endDrag = startDrag;
+				}
+			}
+		});
+		display.addFilter(SWT.MouseUp, new Listener() {
+			
+			@Override
+			public void handleEvent(Event e) {
+				if (e.widget instanceof Game2048Tile && isChild(board, (Control) e.widget)) 
+				{
+				endDrag = new Point(e.x, e.y); 
+            	
+            	int horizontalDiff=endDrag.x-startDrag.x;
+            	int verticalDiff=endDrag.y-startDrag.y;
+            	
+            	//no movement was made
+            	if(horizontalDiff==0 && verticalDiff==0)
+            		return;
+            	//determine what kind of movement was made
+            	if( Math.abs(horizontalDiff)>Math.abs(verticalDiff)) //horizontal
+            	{
+            		if (horizontalDiff>0) //right
+            			userCommand = GameAction.RIGHT;
+            		else //left
+            			userCommand = GameAction.LEFT;
+            	}	
+            	else //vertical
+            	{
+            		if (verticalDiff<0) //up
+            			userCommand = GameAction.UP;
+            		else //down
+            			userCommand = GameAction.DOWN;
+            	} 
+            		
+                startDrag = null;  
+                endDrag = null;  
+              
+                // raise a flag of a change
+				setChanged();
+				// actively notify all observers
+				// and invoke their update method
+				notifyObservers();
+				}
+			}
+		});
+	
+	     
 	}
 	
 	@Override

@@ -2,8 +2,8 @@ package controller;
 
 
 
-import view.GameMazeView;
 import model.GameMazeModel;
+import view.GameMazeView;
 
 public class GameMazeBoot {
 

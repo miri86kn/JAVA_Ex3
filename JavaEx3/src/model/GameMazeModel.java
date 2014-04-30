@@ -1,17 +1,11 @@
 package model;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
-import com.thoughtworks.xstream.XStream;
 
 
 public class GameMazeModel extends AbsModel {
 
 	// Data Members
-	//private int playerRow; 
-	//private int playerCol; 
 	
 	// Constants
 	public final int EMPTY = 0;
