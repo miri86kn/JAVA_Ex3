@@ -76,7 +76,7 @@ public class Presenter implements Observer {
 				ui.gameWin();
 			}
 	
-			if (arg1 != null && arg1.toString() == "OVER") {
+			if (arg1 != null && arg1.toString() == "GAME_OVER") {
 				ui.gameOver();
 			}
 		}
