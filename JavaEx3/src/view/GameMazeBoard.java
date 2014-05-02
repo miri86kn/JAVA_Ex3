@@ -15,8 +15,9 @@ public class GameMazeBoard extends AbsBoard {
 	int cols;
 	GameMazeTile tiles[][];
 
-	
+	// Constants
 	private static final int SPACE_WIDTH = 2;
+	
 	// Methods
 
 	// Game2048Board Constructor
