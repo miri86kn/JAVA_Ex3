@@ -16,6 +16,7 @@ public class GameMazeBoot {
 		Presenter p=new Presenter(model,ui);
 		model.addObserver(p);
 		ui.addObserver(p);
-		ui.run();
+		//ui.run();
+		new Thread(ui).start();
 	}
 }
