@@ -14,6 +14,15 @@ public class Game2048View extends AbsGameView {
 	// Data Members
 	private Point startDrag, endDrag;
 	
+	// Methods
+	
+	// Game2048View Constructor
+	public Game2048View() {
+		startDrag = new Point(0, 0);
+		endDrag = new Point(0, 0);
+	}
+	
+	
 	// Method which initializes the game board
 	@Override
 	public void initGameBoard(State state) {
@@ -81,10 +90,13 @@ public class Game2048View extends AbsGameView {
 			public void handleEvent(Event e) {
 				if (e.widget instanceof Game2048Tile && isChild(board, (Control) e.widget)) 
 				{
-				endDrag = new Point(e.x, e.y); 
-            	
-            	int horizontalDiff=endDrag.x-startDrag.x;
-            	int verticalDiff=endDrag.y-startDrag.y;
+				endDrag = new Point(e.x, e.y);
+				int horizontalDiff = 0;
+				int verticalDiff = 0;
+            	if ((startDrag != null) && (endDrag != null)) {
+            		horizontalDiff=endDrag.x-startDrag.x;
+            		verticalDiff=endDrag.y-startDrag.y;
+            	}
             	
             	//no movement was made
             	if(horizontalDiff==0 && verticalDiff==0)
@@ -104,10 +116,13 @@ public class Game2048View extends AbsGameView {
             		else //down
             			userCommand = GameAction.DOWN;
             	} 
-            		
-                startDrag = null;  
-                endDrag = null;  
-              
+            	
+            	//startDrag = null;  
+                //endDrag = null;  
+                
+                startDrag = new Point(0,0);  
+                endDrag = new Point(0,0);  
+                
                 // raise a flag of a change
 				setChanged();
 				// actively notify all observers
