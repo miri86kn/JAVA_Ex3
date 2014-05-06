@@ -39,12 +39,15 @@ public class Game2048Model extends AbsModel {
 		{	
 			addRandomNumber();
 			this.stateStack.add(this.currState.Clone());
+		
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers(); 
 		}
-		// raise a flag of a change
-		setChanged();
-		// actively notify all observers
-		// and invoke their update method
-		notifyObservers(); 
+		
+			checkGameState();
 		
 		
 	}
@@ -71,12 +74,16 @@ public class Game2048Model extends AbsModel {
 		{
 			addRandomNumber();
 			this.stateStack.add(this.currState.Clone());
-		}
+		
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
 		// and invoke their update method
 		notifyObservers(); 
+		}
+		
+			checkGameState();
+		
 	}
 
 	@Override
@@ -101,12 +108,15 @@ public class Game2048Model extends AbsModel {
 		{
 			addRandomNumber();
 			this.stateStack.add(this.currState.Clone());
-		}
+		
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
 		// and invoke their update method
-		notifyObservers(); 
+		notifyObservers();
+		}
+			checkGameState();
+		
 	}
 
 	@Override
@@ -131,12 +141,16 @@ public class Game2048Model extends AbsModel {
 		{
 			addRandomNumber();
 			this.stateStack.add(this.currState.Clone());
-		}
+		
 		// raise a flag of a change
 		setChanged();
 		// actively notify all observers
 		// and invoke their update method
 		notifyObservers();
+		}
+		
+	    checkGameState();
+		
 	}
 	
 	@Override
@@ -178,7 +192,12 @@ public class Game2048Model extends AbsModel {
 	//TODO: check game logic - need to return 2 or maybe also 4 or 8
 	private int getNewRandomNumber()
 	{
-		return 2;
+		Random random = new Random(); //get new random number
+		int randomNumber = random.nextInt(100);
+		if (randomNumber%5 == 0)
+			return 4;
+		else
+			return 2;
 	}
 
 	private boolean pushAllRigth()
@@ -264,7 +283,26 @@ public class Game2048Model extends AbsModel {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	//helper function to check id game is eon or lost
+	private void checkGameState(){
+		if (gameWon())
+		{
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers("WIN");
+		}
+		else if(boardIsFull())
+		{
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers("GAME_OVER");
+		}
+	}
 
 	private boolean gameWon(){
 		for(int i=0; i< boardSize; i++)
@@ -280,20 +318,27 @@ public class Game2048Model extends AbsModel {
 		boolean emptyCellExists=false;
 		boolean similarNumbersExists=false;
 		for(int i=0; i< boardSize; i++)
-			for(int j=0; j< boardSize; j++)
+			for(int j=0; j< boardSize && !emptyCellExists; j++)
 			{
 				if (this.currState.getBoard()[i][j] == EMPTY_CELL)
 				{
 						emptyCellExists= true;
-						break;
+						
 				}
 			}
-		if (emptyCellExists){
-			for(int i=0; i< boardSize-1; i++)
+		if (!emptyCellExists){
+			for(int i=0; i< boardSize; i++)
 				for(int j=0; j< boardSize-1; j++)
 				{
-					similarNumbersExists = (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j+1])
-							|| (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j-1]);
+					similarNumbersExists = (this.currState.getBoard()[i][j] == this.currState.getBoard()[i][j+1]);
+							
+					if (similarNumbersExists)
+						return false;
+				}
+			for(int i=0; i<boardSize-1; i++)
+				for (int j=0; j<boardSize; j++)
+				{
+					similarNumbersExists = (this.currState.getBoard()[i][j] == this.currState.getBoard()[i+1][j]);
 					if (similarNumbersExists)
 						return false;
 				}
