@@ -3,10 +3,6 @@ package model;
 
 import java.util.Random;
 
-
-
-
-
 //public class Game2048Model extends Observable implements Model, Runnable {
 public class Game2048Model extends AbsModel {
 	

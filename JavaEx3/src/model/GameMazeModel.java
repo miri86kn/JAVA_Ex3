@@ -12,6 +12,7 @@ public class GameMazeModel extends AbsModel {
 	public final int WALL = 1;
 	public final int PLAYER = 2;
 	public final int EXIT = 3;
+	public final int SCORE_LIMIT = 1000;
 	
 	public final int HORIZONTAL_MOVE_COST = 10;
 	public final int DIAGONAL_MOVE_COST = 15;
@@ -37,8 +38,6 @@ public class GameMazeModel extends AbsModel {
 			this.stateStack.add(getCurrtState().Clone()); // Add current state to state stack
 		}
 		
-		//this.stateStack.add(getCurrtState().Clone()); // Add current state to state stack
-		
 		//check if player reached exit
 		if(isGameWon())
 		{
@@ -47,6 +46,14 @@ public class GameMazeModel extends AbsModel {
 			// actively notify all observers
 			// and invoke their update method
 			notifyObservers("WIN");
+		}
+		
+		if (isGameOver()) {
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			notifyObservers("GAME_OVER");
 		}
 	}
 	
@@ -221,6 +228,11 @@ public class GameMazeModel extends AbsModel {
 	private boolean isGameWon(){
 		//is current player location the exit
 		return currState.getBoard()[currState.getPlayerRow()][currState.getPlayerCol()] ==  EXIT;
+	}
+	
+	private boolean isGameOver(){
+		//is current score the maximum
+		return ( currState.getScore() ==  SCORE_LIMIT );
 	}
 	
 	@Override
