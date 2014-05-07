@@ -12,8 +12,6 @@ import view.GameMazeView;
 public class GameMazeBoot {
 
 	public static void main(String[] args) {
-
-        //Test generation of new maze
 		GameMazeModel model =new GameMazeModel(8);
 		GameMazeView ui = new GameMazeView();
 		
