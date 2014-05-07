@@ -1,6 +1,10 @@
+/*
+ * Authors:
+ * Name: Rotem Adhoh ID: 301738845
+ * Name: Maria Kusinka ID: 313926677
+ */
+
 package controller;
-
-
 
 import model.GameMazeModel;
 import view.GameMazeView;
