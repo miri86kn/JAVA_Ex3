@@ -23,5 +23,4 @@ public class Game2048Boot {
 		//ui.run();
 		new Thread(ui).start();
 	}
-
 }
