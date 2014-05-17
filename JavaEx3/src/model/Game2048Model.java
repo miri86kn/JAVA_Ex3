@@ -192,12 +192,18 @@ public class Game2048Model extends AbsModel {
 	//TODO: check game logic - need to return 2 or maybe also 4 or 8
 	private int getNewRandomNumber()
 	{
-		Random random = new Random(); //get new random number
+		/*Random random = new Random(); //get new random number
 		int randomNumber = random.nextInt(100);
 		if (randomNumber%5 == 0)
 			return 4;
 		else
-			return 2;
+			return 2;*/
+		
+		// Generate number 2 with 0.9 probability, and 4 with 0.1 probability
+		Random randomGenerator = new Random(System.currentTimeMillis());
+		int randomValue=(randomGenerator.nextDouble()< 0.9)?2:4;
+		
+		return randomValue;
 	}
 
 	private boolean pushAllRigth()
