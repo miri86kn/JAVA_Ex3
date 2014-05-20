@@ -63,6 +63,17 @@ public class Presenter implements Observer {
 			case UNDO:
 				model.getPrevState();
 				break;
+			case SOLVE:
+				if (arg1 != null)
+				{
+					Object[] args = (Object[])arg1;
+					if(args.length == 2)
+					{
+					  String ip =(String)args[0];
+					  int port = (int)args[1];
+					  model.solve(ip, port);
+					}
+				}
 			default:
 				break;
 			}

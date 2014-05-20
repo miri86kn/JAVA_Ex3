@@ -18,4 +18,5 @@ public interface Model {
 	public void moveUpLeft();
 	public void moveDownRight();
 	public void moveDownLeft();
+	public void solve(String ip, int port);
 }

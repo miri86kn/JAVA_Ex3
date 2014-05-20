@@ -136,7 +136,13 @@ public class Game2048View extends AbsGameView {
 	}
 	
 	private void askForHint(String ipAddr, int port) {
-		
+		userCommand = GameAction.SOLVE;
+		// raise a flag of a change
+		setChanged();
+		// actively notify all observers
+		// and invoke their update method
+		Object[] args = { ipAddr, port };
+		notifyObservers(args);
 	}
 	
 	@Override
