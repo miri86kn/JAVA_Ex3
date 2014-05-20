@@ -135,6 +135,10 @@ public class Game2048View extends AbsGameView {
 	     
 	}
 	
+	private void askForHint(String ipAddr, int port) {
+		
+	}
+	
 	@Override
 	protected void setShellText() {
 		shell.setText("2048 Game");
