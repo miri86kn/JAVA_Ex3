@@ -9,6 +9,8 @@ import java.util.Observable;
 import model.State;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -46,10 +48,10 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		Label bestScoreLbl;
 	    State currState;
 	    //Button allGame, singleMove;
-	    Text numOfMoves;
+	    Text numOfMoves, ip, port;
 	    Color shellColor;
 	    Font font;
-	    
+	    Button addServer;
 	    // Constants
 		private static final int LABEL_DATA_WIDTH = 60;
 
@@ -173,13 +175,13 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			    
 				Label labelNewServer = new Label(composite, SWT.NONE);
 				labelNewServer.setText("3. Add New Server:");
-				Text ip = new Text(composite,SWT.BORDER);
-				Text port = new Text(composite,SWT.BORDER);
+				 ip = new Text(composite,SWT.BORDER);
+				 port = new Text(composite,SWT.BORDER);
 				
 				// Hint button
-				Button addServer = GenerateButton(composite, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+			    addServer = GenerateButton(composite, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
 									"Add server", null);
-				
+				addServer.setEnabled(false);
 			    ExpandItem hintSettingsExpander = new ExpandItem(bar, SWT.NONE, 0);
 			    hintSettingsExpander.setText("Hint Settings         :");
 			    hintSettingsExpander.setHeight(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
@@ -280,9 +282,33 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				}
 			});
 			
+			ip.addModifyListener(new ModifyListener() {
+				
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					addServer.setEnabled(validIpPort());
+				}
+			});
+			port.addModifyListener(new ModifyListener() {
+				
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+						addServer.setEnabled(validIpPort());
+					
+				}
+			});
 			shell.open();
 		}
 		
+		private boolean validIpPort()
+		{
+			String ipStr = ip.getText();
+			String portStr = port.getText();
+			
+			if (ipStr == "" || portStr=="")
+				return false;
+			return true;
+		}
 		// Method which initializes menu components
 		private void initMenus() {
 			// Create the bar menu
