@@ -1,6 +1,9 @@
 package view;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Observable;
 
 import model.State;
@@ -16,16 +19,21 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 public abstract class AbsGameView extends Observable implements View, Runnable {
 		// Data Members
@@ -37,117 +45,151 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		Label scoreLbl;
 		Label bestScoreLbl;
 	    State currState;
-		
-		// Constants
+	    
+	    Color shellColor;
+	    Font font;
+	    
+	    // Constants
 		private static final int LABEL_DATA_WIDTH = 60;
 
 		// Methods
 		
+		private Group GenerateGroup(Composite parent, int style, Layout layout, Object layoutData)
+		{
+			Group newGroup = new Group(parent, style);
+			newGroup.setLayout(layout);
+			newGroup.setLayoutData(layoutData);
+			newGroup.setBackground(shellColor);
+			return newGroup;
+		}
+		
+		private Button GenerateButton(Composite parent, int style, GridData gridData, String text, String imageUrl)
+		{
+			Button newButton = new Button(parent, style);
+			newButton.setText(text);
+			newButton.setLayoutData(gridData);
+			newButton.setFont(font);
+			if (imageUrl != null)
+			{Image imageBack = new Image(shell.getDisplay(), imageUrl);
+			newButton.setImage(imageBack);}
+			return newButton;
+		}
 		// Method which initializes all components
 		private void initComponents() {
+			
+			
 			display = new Display();
 			shell = new Shell(display);
+			shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
 			shell.setLayout(new GridLayout(3, false));
-			Color shellColor =  new Color(shell.getDisplay(), 250, 248, 239);
 			shell.setBackground(shellColor);
 			shell.setSize(520, 420);
 			shell.setMinimumSize(520, 420);
 			setShellText();
 		    
+			
+				
 			// Initialize the menus
 			initMenus();
 			
-			Font font = new Font(shell.getDisplay(), "Tahoma", 10, SWT.BOLD);
+			font = new Font(shell.getDisplay(), "Tahoma", 10, SWT.BOLD);
 			
-			//Create GEneral Group that will contain all actions
-			Group actionsGroup = new Group(shell, SWT.SHADOW_OUT);
-			actionsGroup.setLayout(new GridLayout(1, true));
-			actionsGroup.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
-			actionsGroup.setBackground(shellColor);
 			
 			// Group which contains all option buttons
-		    Group buttonGroup = new Group(actionsGroup, SWT.SHADOW_OUT);
-		    buttonGroup.setLayout(new GridLayout(1, true));
-		    buttonGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-			buttonGroup.setBackground(shellColor);
+		    Group buttonGroup = GenerateGroup(shell, SWT.SHADOW_OUT, new GridLayout(1, true), new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		    
-			//Group which contains hint controls
-			Group hintGroup = new Group(actionsGroup, SWT.SHADOW_OUT);
-			hintGroup.setLayout(new GridLayout(3, true));
-			hintGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-			hintGroup.setBackground(shellColor);
-			hintGroup.setText("Hints For Dumbasses:");
-		
-			// Group which contains all option buttons
-		    Group  hintSettingsGroup= new Group(actionsGroup, SWT.SHADOW_OUT);
-		    hintSettingsGroup.setLayout(new GridLayout(1, true));
-		    hintSettingsGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-		    hintSettingsGroup.setBackground(shellColor);
-		    hintSettingsGroup.setText("Hints Settings:");
-		    
+		  
 			
-			// Undo button
-			Button undoButton = new Button(buttonGroup, SWT.PUSH);
-			undoButton.setText("Undo Move");
-			undoButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-			undoButton.setFont(font);
-			Image imageBack = new Image(shell.getDisplay(), "resources\\Images\\back.png");
-			undoButton.setImage(imageBack);
+			
+		    // Undo button
+			Button undoButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+					"Undo Move", "resources\\Images\\back.png");
 			
 			// Restart button
-			Button restartButton = new Button(buttonGroup, SWT.PUSH);
-			restartButton.setText("Restart Game");
-			restartButton.setFont(font);
-			Image imageRestart = new Image(shell.getDisplay(), "resources\\Images\\undo.png");
-			restartButton.setImage(imageRestart);
-			restartButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+			Button restartButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+					"Restart Game", "resources\\Images\\undo.png");
 			
 			// Load button
-			Button loadButton = new Button(buttonGroup, SWT.PUSH);
-			loadButton.setText("Load Game");
-			loadButton.setFont(font);
-			Image imageLoad = new Image(shell.getDisplay(), "resources\\Images\\folder.png");
-			loadButton.setImage(imageLoad);
-			loadButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
-			
+			Button loadButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+					"Load Game", "resources\\Images\\folder.png");
+					
 			// Save button
-			Button saveButton = new Button(buttonGroup, SWT.PUSH);
-			saveButton.setText("Save Game");
-			saveButton.setFont(font);
-			Image imageSave = new Image(shell.getDisplay(), "resources\\Images\\star.png");
-			saveButton.setImage(imageSave);
-			saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+			Button saveButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+					"Save Game", "resources\\Images\\star.png");
+			
+			// Hint button
+			Button hintButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+								"Get Hint", "resources\\Images\\star.png");
+						
 			
 			
-			//Hint
-			 Composite controlsLayout = new Composite(hintGroup, SWT.NULL);
+		
+			 //Hint details
+			 ExpandBar bar = new ExpandBar(buttonGroup, SWT.V_SCROLL);
+			 //Image image = new Image(display, "yourFile.gif");
+			 
+			 //container
+			 Composite composite = new Composite(bar, SWT.NONE);
+			 GridLayout layout = new GridLayout();
+			 layout.marginLeft = layout.marginTop = layout.marginRight = layout.marginBottom = 2;
+			 layout.verticalSpacing = 4;
+			 composite.setLayout(layout);
+			 
+			 //Solve all game or num of moves
+			  Label labelHintFunc = new Label(composite, SWT.NONE);
+			  labelHintFunc.setText("1. Select Hint Action:");
+			    
+			 Composite controlsLayout = new Composite(composite, SWT.NULL);
 			 controlsLayout.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 				
-			 FillLayout fillLayout = new FillLayout();
-			 fillLayout.type = SWT.VERTICAL;
-			 controlsLayout.setLayout(fillLayout);
-			 controlsLayout.setBackground(shellColor);
-			
-			 
-			 Composite composite = new Composite(controlsLayout, SWT.NULL);
-			 composite.setLayout(new RowLayout());
-			 composite.setBackground(shellColor);
-			 
-			 Button allGame = new Button(composite, SWT.RADIO);
-			 allGame.setText("All Game");
-			 allGame.setFont(font);
-			 allGame.setBackground(shellColor);
-			 Button singleMove = new Button(composite, SWT.RADIO);
-			 singleMove.setText("Singe Move");
-			 singleMove.setFont(font);
-			 singleMove.setBackground(shellColor);
-			
-			Button hintBtn = new Button(controlsLayout, SWT.PUSH);
-			hintBtn.setText("Get Hint");
-			hintBtn.setFont(font);
-			//Image imageLoad = new Image(shell.getDisplay(), "resources\\Images\\folder.png");
-			//loadButton.setImage(imageLoad);
-			//hintBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+			  FillLayout fillLayout = new FillLayout();
+			  fillLayout.type = SWT.VERTICAL;
+			  controlsLayout.setLayout(fillLayout);
+				 controlsLayout.setBackground(shellColor);
+				
+				 Button allGame = new Button(composite, SWT.RADIO);
+				 allGame.setText("Solve All Game");
+				 allGame.setFont(font);
+				 allGame.setBackground(shellColor);
+				 allGame.setSelection(true);
+				 Button singleMove = new Button(composite, SWT.RADIO);
+				 singleMove.setText("Give Hints:");
+				 singleMove.setFont(font);
+				 singleMove.setBackground(shellColor);
+				 
+				 Text numOfMoves = new Text(composite,SWT.BORDER);
+				 numOfMoves.setText("1");
+				 
+			   
+			    Label labelServerDetails = new Label(composite, SWT.NONE);
+			    labelServerDetails.setText("2. Select Server Details");
+			    
+		        Combo comboServers = new Combo(composite, SWT.NONE);
+				ArrayList<String> serverData = getServerData();
+				String[] arr =new String[serverData.size()];
+				serverData.toArray(arr);
+				comboServers.setItems(arr);
+			    
+				Label labelNewServer = new Label(composite, SWT.NONE);
+				labelNewServer.setText("3. Add New Server:");
+				Text ip = new Text(composite,SWT.BORDER);
+				Text port = new Text(composite,SWT.BORDER);
+				
+				// Hint button
+				Button addServer = GenerateButton(composite, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+									"Add server", null);
+				
+			    ExpandItem hintSettingsExpander = new ExpandItem(bar, SWT.NONE, 0);
+			    hintSettingsExpander.setText("Hint Settings         :");
+			    hintSettingsExpander.setHeight(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+			    hintSettingsExpander.setControl(composite);
+			    //hintSettingsExpander.setImage(image);
+                hintSettingsExpander.setExpanded(true);
+                
+               
+			    
+                bar.setSpacing(8);
+         	//hintBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			
 			// Initialize the main group which contains game board and score groups
 			initBoardGroup();
@@ -509,4 +551,12 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		}
 	
 		protected abstract void setShellText();
+		
+		private ArrayList<String> getServerData(){
+			ArrayList<String> servers = new ArrayList<String>();
+			servers.add("10.160.5.85"+" "+ 5550);
+			servers.add("10.160.5.82"+" "+ 5550);
+			servers.add("10.160.5.81"+" "+ 5550);
+			return servers;
+		}
 }
