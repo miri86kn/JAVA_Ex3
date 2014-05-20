@@ -45,7 +45,8 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		Label scoreLbl;
 		Label bestScoreLbl;
 	    State currState;
-	    
+	    //Button allGame, singleMove;
+	    Text numOfMoves;
 	    Color shellColor;
 	    Font font;
 	    
@@ -157,9 +158,9 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				 singleMove.setFont(font);
 				 singleMove.setBackground(shellColor);
 				 
-				 Text numOfMoves = new Text(composite,SWT.BORDER);
+				  numOfMoves = new Text(composite,SWT.BORDER);
 				 numOfMoves.setText("1");
-				 
+				 numOfMoves.setEnabled(false);
 			   
 			    Label labelServerDetails = new Label(composite, SWT.NONE);
 			    labelServerDetails.setText("2. Select Server Details");
@@ -249,8 +250,35 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				}
 			});
 			
+			allGame.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					numOfMoves.setEnabled(false);
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			
-			
+			singleMove.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					numOfMoves.setEnabled(true);
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			
 			shell.open();
 		}
