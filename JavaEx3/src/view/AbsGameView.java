@@ -11,8 +11,10 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -57,12 +59,34 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			
 			Font font = new Font(shell.getDisplay(), "Tahoma", 10, SWT.BOLD);
 			
+			//Create GEneral Group that will contain all actions
+			Group actionsGroup = new Group(shell, SWT.SHADOW_OUT);
+			actionsGroup.setLayout(new GridLayout(1, true));
+			actionsGroup.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
+			actionsGroup.setBackground(shellColor);
+			
 			// Group which contains all option buttons
-		    Group buttonGroup = new Group(shell, SWT.SHADOW_OUT);
+		    Group buttonGroup = new Group(actionsGroup, SWT.SHADOW_OUT);
 		    buttonGroup.setLayout(new GridLayout(1, true));
-		    buttonGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+		    buttonGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			buttonGroup.setBackground(shellColor);
-		    // Undo button
+		    
+			//Group which contains hint controls
+			Group hintGroup = new Group(actionsGroup, SWT.SHADOW_OUT);
+			hintGroup.setLayout(new GridLayout(3, true));
+			hintGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+			hintGroup.setBackground(shellColor);
+			hintGroup.setText("Hints For Dumbasses:");
+		
+			// Group which contains all option buttons
+		    Group  hintSettingsGroup= new Group(actionsGroup, SWT.SHADOW_OUT);
+		    hintSettingsGroup.setLayout(new GridLayout(1, true));
+		    hintSettingsGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		    hintSettingsGroup.setBackground(shellColor);
+		    hintSettingsGroup.setText("Hints Settings:");
+		    
+			
+			// Undo button
 			Button undoButton = new Button(buttonGroup, SWT.PUSH);
 			undoButton.setText("Undo Move");
 			undoButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
@@ -93,6 +117,37 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			Image imageSave = new Image(shell.getDisplay(), "resources\\Images\\star.png");
 			saveButton.setImage(imageSave);
 			saveButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+			
+			
+			//Hint
+			 Composite controlsLayout = new Composite(hintGroup, SWT.NULL);
+			 controlsLayout.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+				
+			 FillLayout fillLayout = new FillLayout();
+			 fillLayout.type = SWT.VERTICAL;
+			 controlsLayout.setLayout(fillLayout);
+			 controlsLayout.setBackground(shellColor);
+			
+			 
+			 Composite composite = new Composite(controlsLayout, SWT.NULL);
+			 composite.setLayout(new RowLayout());
+			 composite.setBackground(shellColor);
+			 
+			 Button allGame = new Button(composite, SWT.RADIO);
+			 allGame.setText("All Game");
+			 allGame.setFont(font);
+			 allGame.setBackground(shellColor);
+			 Button singleMove = new Button(composite, SWT.RADIO);
+			 singleMove.setText("Singe Move");
+			 singleMove.setFont(font);
+			 singleMove.setBackground(shellColor);
+			
+			Button hintBtn = new Button(controlsLayout, SWT.PUSH);
+			hintBtn.setText("Get Hint");
+			hintBtn.setFont(font);
+			//Image imageLoad = new Image(shell.getDisplay(), "resources\\Images\\folder.png");
+			//loadButton.setImage(imageLoad);
+			//hintBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 			
 			// Initialize the main group which contains game board and score groups
 			initBoardGroup();
@@ -152,7 +207,9 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				}
 			});
 			
-			//shell.pack();
+			
+			
+			
 			shell.open();
 		}
 		
