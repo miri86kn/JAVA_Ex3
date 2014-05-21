@@ -2,8 +2,6 @@ package view;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Observable;
 
 import model.State;
@@ -19,7 +17,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -37,13 +34,14 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+
 public abstract class AbsGameView extends Observable implements View, Runnable {
 		// Data Members
 		Display display;
 		Shell shell;
 		AbsBoard board;
 		GameAction userCommand;
-		Group boardGroup;
+		Group boardGroup, buttonGroup;
 		Label scoreLbl;
 		Label bestScoreLbl;
 	    State currState;
@@ -51,7 +49,8 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	    Text numOfMoves, ip, port;
 	    Color shellColor;
 	    Font font;
-	    Button addServer;
+	    Button addServer, hintButton, allGame, singleMove;
+	    Combo comboServers;
 	    // Constants
 		private static final int LABEL_DATA_WIDTH = 60;
 
@@ -89,21 +88,33 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			shell.setSize(520, 420);
 			shell.setMinimumSize(520, 420);
 			setShellText();
-		    
-			
-				
+		   
 			// Initialize the menus
 			initMenus();
 			
 			font = new Font(shell.getDisplay(), "Tahoma", 10, SWT.BOLD);
 			
 			
+			
+			//Initialize buttons in buttonGroup  
+			initButtonGroupMenu();
+			
+			//Initialize server settings menu 
+			initServerSettingMenu();
+		
+			// Initialize the main group which contains game board and score groups
+			initBoardGroup();
+			
+			
+			shell.open();
+		}
+		
+		private void initButtonGroupMenu()
+		{
 			// Group which contains all option buttons
-		    Group buttonGroup = GenerateGroup(shell, SWT.SHADOW_OUT, new GridLayout(1, true), new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		    buttonGroup = GenerateGroup(shell, SWT.SHADOW_OUT, new GridLayout(1, true), new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		    
-		  
-			
-			
+		    
 		    // Undo button
 			Button undoButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
 					"Undo Move", "resources\\Images\\back.png");
@@ -120,21 +131,105 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			Button saveButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
 					"Save Game", "resources\\Images\\star.png");
 			
+			
 			// Hint button
-			Button hintButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
-								"Get Hint", "resources\\Images\\star.png");
+			 hintButton = GenerateButton(buttonGroup, SWT.PUSH, new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1),
+											"Get Hint", "resources\\Images\\star.png");
+									
+						hintButton.setEnabled(false); //set hint button disabled until server details are selected
 						
-			
-			
+			// Determine restart button select action
+						restartButton.addSelectionListener(new SelectionListener() {
+
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								newGame();
+								setBoardFocus();
+							}
+
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {}
+						});
+						
+						// Determine load button select action
+						loadButton.addSelectionListener(new SelectionListener() {
+
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								loadGameFile();
+								setBoardFocus();
+							}
+
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {
+							}
+						});
+								
+						// Determine save button select action
+						saveButton.addSelectionListener(new SelectionListener() {
+
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								saveGame();
+								setBoardFocus();
+							}
+
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {
+							}
+						});
+						
+						// Determine undo button select action
+						undoButton.addSelectionListener(new SelectionListener() {
+
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								undoAction();
+								setBoardFocus();
+							}
+
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {
+							}
+						});
+						
+						
+						hintButton.addSelectionListener(new SelectionListener() {
+							
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								//no need to validate because of ui restrictions
+								boolean solveAllGame = allGame.getSelection();
+								int numOfHints;
+								if (solveAllGame) 
+									numOfHints=0;
+								else 
+									numOfHints = Integer.parseInt(numOfMoves.getText());
+								//ask server for hints
+								askForHint(ip.getText(), Integer.parseInt(port.getText()), numOfHints);
+							   
+							
+							}
+							
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {
+							}
+						});
+						
+		}
 		
+		private void initServerSettingMenu(){
+
 			 //Hint details
 			 ExpandBar bar = new ExpandBar(buttonGroup, SWT.V_SCROLL);
 			 //Image image = new Image(display, "yourFile.gif");
 			 
+			 bar.setBackground(shellColor);
+			 
 			 //container
 			 Composite composite = new Composite(bar, SWT.NONE);
 			 GridLayout layout = new GridLayout();
-			 layout.marginLeft = layout.marginTop = layout.marginRight = layout.marginBottom = 2;
+			 layout.marginLeft = layout.marginTop = layout.marginRight = layout.marginBottom = 0;
 			 layout.verticalSpacing = 4;
 			 composite.setLayout(layout);
 			 
@@ -148,17 +243,17 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			  FillLayout fillLayout = new FillLayout();
 			  fillLayout.type = SWT.VERTICAL;
 			  controlsLayout.setLayout(fillLayout);
-				 controlsLayout.setBackground(shellColor);
+				// controlsLayout.setBackground(shellColor);
 				
-				 Button allGame = new Button(composite, SWT.RADIO);
+				  allGame = new Button(composite, SWT.RADIO);
 				 allGame.setText("Solve All Game");
 				 allGame.setFont(font);
-				 allGame.setBackground(shellColor);
+				// allGame.setBackground(shellColor);
 				 allGame.setSelection(true);
-				 Button singleMove = new Button(composite, SWT.RADIO);
+				  singleMove = new Button(composite, SWT.RADIO);
 				 singleMove.setText("Give Hints:");
 				 singleMove.setFont(font);
-				 singleMove.setBackground(shellColor);
+				 //singleMove.setBackground(shellColor);
 				 
 				  numOfMoves = new Text(composite,SWT.BORDER);
 				 numOfMoves.setText("1");
@@ -167,7 +262,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			    Label labelServerDetails = new Label(composite, SWT.NONE);
 			    labelServerDetails.setText("2. Select Server Details");
 			    
-		        Combo comboServers = new Combo(composite, SWT.NONE);
+		         comboServers = new Combo(composite, SWT.NONE);
 				ArrayList<String> serverData = getServerData();
 				String[] arr =new String[serverData.size()];
 				serverData.toArray(arr);
@@ -187,92 +282,75 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			    hintSettingsExpander.setHeight(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 			    hintSettingsExpander.setControl(composite);
 			    //hintSettingsExpander.setImage(image);
-                hintSettingsExpander.setExpanded(true);
-                
+               hintSettingsExpander.setExpanded(true);
                
+              
 			    
-                bar.setSpacing(8);
-         	//hintBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+               bar.setSpacing(8);
+        	//hintBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+               
+           	//On Choose solve all game or solve few moves
+   			allGame.addSelectionListener(new SelectionListener() {
+   				
+   				@Override
+   				public void widgetSelected(SelectionEvent arg0) {
+   					
+   					numOfMoves.setEnabled(false);
+   				}
+   				
+   				@Override
+   				public void widgetDefaultSelected(SelectionEvent arg0) {
+   				
+   				}
+   			});
+   			
+   			singleMove.addSelectionListener(new SelectionListener() {
+   				
+   				@Override
+   				public void widgetSelected(SelectionEvent arg0) {
+   					numOfMoves.setEnabled(true);
+   				}
+   				
+   				@Override
+   				public void widgetDefaultSelected(SelectionEvent arg0) {
+   					
+   				}
+   			});
+   			
+   			//On Change IP & Port:
+   			ip.addModifyListener(new ModifyListener() {
+   				@Override
+   				public void modifyText(ModifyEvent arg0) {
+   					addServer.setEnabled(validIpPort());
+   				}
+   			});
+   			port.addModifyListener(new ModifyListener() {
+   				
+   				@Override
+   				public void modifyText(ModifyEvent arg0) {
+   					addServer.setEnabled(validIpPort());
+   					
+   				}
+   			});
 			
-			// Initialize the main group which contains game board and score groups
-			initBoardGroup();
-			
-			// Determine restart button select action
-			restartButton.addSelectionListener(new SelectionListener() {
-
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					newGame();
-					setBoardFocus();
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {}
-			});
-			
-			// Determine load button select action
-			loadButton.addSelectionListener(new SelectionListener() {
-
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					loadGameFile();
-					setBoardFocus();
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {
-				}
-			});
-					
-			// Determine save button select action
-			saveButton.addSelectionListener(new SelectionListener() {
-
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					saveGame();
-					setBoardFocus();
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {
-				}
-			});
-			
-			// Determine undo button select action
-			undoButton.addSelectionListener(new SelectionListener() {
-
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					undoAction();
-					setBoardFocus();
-				}
-
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {
-				}
-			});
-			
-			allGame.addSelectionListener(new SelectionListener() {
+   			//on adding new port
+   			//note: no need to do validation here - in case not valid data - button is disabled
+   			addServer.addSelectionListener(new SelectionListener() {
 				
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
-					// TODO Auto-generated method stub
-					numOfMoves.setEnabled(false);
-				}
-				
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			
-			singleMove.addSelectionListener(new SelectionListener() {
-				
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					// TODO Auto-generated method stub
-					numOfMoves.setEnabled(true);
+				 //add server data to combo
+				 comboServers.add(	ip.getText() +" "+port.getText());
+				 
+				 //clear text boxes
+				 ip.setText("");
+				 port.setText("");
+				 
+				 //select in servers combo the newly added ip
+				 //new ip is always added to the end of the list  
+				 comboServers.select(comboServers.getItemCount()-1);
+				 
+				 //TODO: save server settings
 				}
 				
 				@Override
@@ -281,34 +359,23 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 					
 				}
 			});
-			
-			ip.addModifyListener(new ModifyListener() {
-				
-				@Override
-				public void modifyText(ModifyEvent arg0) {
-					addServer.setEnabled(validIpPort());
-				}
-			});
-			port.addModifyListener(new ModifyListener() {
-				
-				@Override
-				public void modifyText(ModifyEvent arg0) {
-						addServer.setEnabled(validIpPort());
-					
-				}
-			});
-			shell.open();
-		}
 		
-		private boolean validIpPort()
-		{
-			String ipStr = ip.getText();
-			String portStr = port.getText();
-			
-			if (ipStr == "" || portStr=="")
-				return false;
-			return true;
+   			//on server selection changed
+   			comboServers.addModifyListener(new ModifyListener() {
+				
+				@Override
+				public void modifyText(ModifyEvent arg0) {
+					String selectedServer = comboServers.getItem(comboServers.getSelectionIndex());
+					if (selectedServer!="")
+					{
+						//enable hints!!!
+						hintButton.setEnabled(true);
+					}
+					
+				}
+			});
 		}
+
 		// Method which initializes menu components
 		private void initMenus() {
 			// Create the bar menu
@@ -453,6 +520,9 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		// Method which initializes the game board
 		public abstract void initGameBoard(State state);
 		
+		
+		
+		
 		// Method which opens "save file" dialog and stores file name
 		private void saveGame() {
 			FileDialog fd = new FileDialog(shell, SWT.SAVE);
@@ -511,7 +581,21 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			// and invoke their update method
 			notifyObservers();
 		}
-			
+		
+		
+		
+		
+		private void askForHint(String ipAddr, int port, int numOfHints) {
+			userCommand = GameAction.SOLVE;
+			// raise a flag of a change
+			setChanged();
+			// actively notify all observers
+			// and invoke their update method
+			Object[] args = { ipAddr, port, numOfHints};
+			notifyObservers(args);
+		}
+		
+		
 		@Override
 		public void run() {
 			initComponents();
@@ -523,7 +607,6 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			display.dispose();
 		}
 
-		
 		@Override
 		public void displayBoard(State state) {
 			currState = state;
@@ -606,11 +689,23 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	
 		protected abstract void setShellText();
 		
+		//get all server data 
 		private ArrayList<String> getServerData(){
 			ArrayList<String> servers = new ArrayList<String>();
 			servers.add("10.160.5.85"+" "+ 5550);
 			servers.add("10.160.5.82"+" "+ 5550);
 			servers.add("10.160.5.81"+" "+ 5550);
 			return servers;
+		}
+		
+		//validate ip and port input
+		private boolean validIpPort()
+		{
+			String ipStr = ip.getText();
+			String portStr = port.getText();
+			
+			if (ipStr == "" || portStr=="")
+				return false;
+			return true;
 		}
 }
