@@ -678,14 +678,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	@Override
 	public void displayBoard(State state) {
 		currState = state;
-
-		/*
-		 * if (board == null) { initGameBoard(currState); } else {
-		 * System.out.println("VIEW Thread: " +
-		 * Thread.currentThread().getName()); board.redraw(currState); // redraw
-		 * board displayScore(); // display updates scores }
-		 */
-
+		
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -694,6 +687,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				} else {
 					board.redraw(currState); // redraw board
 					displayScore(); // display updates scores
+					display.update(); // important!!!
 				}
 			}
 		});
