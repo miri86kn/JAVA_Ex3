@@ -366,11 +366,7 @@ public class GameMazeModel extends AbsModel {
 
 
 
-	@Override
-	public void solve(String ip, int port) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	  
    
 

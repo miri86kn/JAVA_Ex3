@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="resources/SWT/org.eclipse.swt.win32.win32.x86_64_3.102.1.v20130827-2048.jar"/>
 	<classpathentry kind="lib" path="resources/XStream/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="resources/XStream/xstream-1.4.7.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

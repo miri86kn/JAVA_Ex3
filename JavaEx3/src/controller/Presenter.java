@@ -3,6 +3,7 @@ package controller;
 import java.util.Observable;
 import java.util.Observer;
 
+import Entities.GameAction;
 import model.Model;
 import view.View;
 
@@ -22,7 +23,7 @@ public class Presenter implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		// VIEW ACTIONS:
 		if (arg0 == ui) {
-			View.GameAction command = ui.getUserCommand();
+			GameAction command = ui.getUserCommand();
 			// process user command from ui
 			switch (command) {
 			case UP_LEFT:
@@ -64,14 +65,15 @@ public class Presenter implements Observer {
 				model.getPrevState();
 				break;
 			case SOLVE:
-				if (arg1 != null)
-				{
+				if (arg1 != null) //{ ip, port, numOfMoves }
+				{ 
 					Object[] args = (Object[])arg1;
-					if(args.length == 2)
+					if(args.length == 3)
 					{
 					  String ip =(String)args[0];
 					  int port = (int)args[1];
-					  model.solve(ip, port);
+					  int numOfMoves = (int)args[2];
+					  model.solve(ip, port, numOfMoves);
 					}
 				}
 			default:

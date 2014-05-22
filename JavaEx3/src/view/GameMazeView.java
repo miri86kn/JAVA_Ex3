@@ -10,6 +10,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import Entities.GameAction;
+
 
 public class GameMazeView extends AbsGameView {
 	

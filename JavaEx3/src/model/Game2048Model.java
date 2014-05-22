@@ -381,9 +381,7 @@ public class Game2048Model extends AbsModel {
 		
 	}
 	
-	public void solve(String ip, int port){
-		
-	}
+	
 	
 	
 
