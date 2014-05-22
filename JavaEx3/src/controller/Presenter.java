@@ -65,17 +65,34 @@ public class Presenter implements Observer {
 				model.getPrevState();
 				break;
 			case SOLVE:
-				if (arg1 != null) //{ ip, port, numOfMoves }
+				  model.solve();
+				break;
+			case CONNECT:
+				if (arg1 != null) //{ ip, port }
 				{ 
 					Object[] args = (Object[])arg1;
-					if(args.length == 3)
+					if(args.length == 2)
 					{
 					  String ip =(String)args[0];
 					  int port = (int)args[1];
-					  int numOfMoves = (int)args[2];
-					  model.solve(ip, port, numOfMoves);
+					  try {
+						model.connectToServer(ip, port);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					}
 				}
+				break;
+			case DISCONNECT:
+				
+				try {
+					model.disconnectServer();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
 			default:
 				break;
 			}

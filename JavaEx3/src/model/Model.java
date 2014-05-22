@@ -18,5 +18,7 @@ public interface Model {
 	public void moveUpLeft();
 	public void moveDownRight();
 	public void moveDownLeft();
-	public void solve(String ip, int port, int numOfMoves);
+	public void solve();
+	public void connectToServer(String ip, int port)  throws Exception;
+	public void disconnectServer() throws Exception;
 }
