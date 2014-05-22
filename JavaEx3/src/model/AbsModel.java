@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
 
+import Entities.Game2048Settings;
 import Entities.GameAction;
 import Entities.SlimState;
 
@@ -229,7 +230,7 @@ public abstract class AbsModel  extends Observable implements Model, Runnable{
 			}
 		}
 		// Send state with -1 score to end communication with server
-		s.setScore(-1);
+		s.setScore(Game2048Settings.FLAG_STOP_SOLVING);
 		outToServer.writeObject(s);
 		outToServer.flush();
 		
