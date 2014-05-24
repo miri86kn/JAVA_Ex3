@@ -1,10 +1,18 @@
 package view;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.Observable;
-import java.util.Queue;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import model.ServerData;
 import model.State;
 
 import org.eclipse.swt.SWT;
@@ -34,6 +42,10 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import Entities.GameAction;
 
@@ -53,18 +65,17 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	Button addServer, hintButton, allGame, singleMove, connectButton;
 	Combo comboServers;
 	boolean continueSolving; //flag
-	Queue<State> myQ;
-
-	public AbsGameView() {
-		super();
-		myQ = new LinkedList<State>();
-	}
-
+	
 	// Constants
 	private static final int LABEL_DATA_WIDTH = 60;
+	private static final String SERVERS_FILE = "resources/serversData.xml";
 
 	// Methods
 
+	public AbsGameView() {
+		super();
+	}
+	
 	private Group GenerateGroup(Composite parent, int style, Layout layout,
 			Object layoutData) {
 		Group newGroup = new Group(parent, style);
@@ -327,7 +338,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		ip = new Text(composite, SWT.BORDER);
 		port = new Text(composite, SWT.BORDER);
 
-		// Hint button
+		// AddServer button
 		addServer = GenerateButton(composite, SWT.PUSH, new GridData(SWT.FILL,
 				SWT.TOP, false, false, 1, 1), "Add server", null);
 		addServer.setEnabled(false);
@@ -404,6 +415,13 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				// add server data to combo
 				comboServers.add(ip.getText() + " " + port.getText());
 
+				// save server settings
+				try {
+					AppendServerList(ip.getText(),port.getText());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				// clear text boxes
 				ip.setText("");
 				port.setText("");
@@ -411,8 +429,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				// select in servers combo the newly added ip
 				// new ip is always added to the end of the list
 				comboServers.select(comboServers.getItemCount() - 1);
-
-				// TODO: save server settings
+				
 			}
 
 			@Override
@@ -788,9 +805,10 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	// get all server data
 	private ArrayList<String> getServerData() {
 		ArrayList<String> servers = new ArrayList<String>();
-		servers.add("10.0.0.9" + " " + 5550);
-		servers.add("10.160.5.82" + " " + 5550);
-		servers.add("10.160.5.81" + " " + 5550);
+		ArrayList<ServerData> serverList = getServerList();
+		for (ServerData data : serverList) {
+			servers.add(data.getIp() + " " + data.getPort());
+		}
 		return servers;
 	}
 
@@ -802,5 +820,78 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		if (ipStr == "" || portStr == "")
 			return false;
 		return true;
+	}
+	
+	// Reads server list from XML file and returns the list
+	private ArrayList<ServerData> getServerList() {
+		ArrayList<ServerData> serverList = new ArrayList<ServerData>();
+		try {
+			File fXmlFile = new File(SERVERS_FILE);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			// normalize doc
+			doc.getDocumentElement().normalize();
+
+			NodeList nList = doc.getElementsByTagName("model.ServerData");
+
+			for (int i = 0; i < nList.getLength(); i++) {
+
+				Node nNode = nList.item(i);
+
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+					Element eElement = (Element) nNode;
+					String ip = eElement.getElementsByTagName("ip").item(0).getTextContent();
+					int port = Integer.valueOf((eElement.getElementsByTagName("port").item(0).getTextContent()));
+					serverList.add(new ServerData(ip, port));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return serverList;
+	}
+	
+	// Append new server list from XML file and returns the list
+	private void AppendServerList(String ip, String port) throws Exception {
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
+				.newInstance();
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+		Document document = documentBuilder.parse(SERVERS_FILE);
+		Element root = document.getDocumentElement();
+
+		// Root Element
+		Element rootElement = document.getDocumentElement();
+
+		Collection<ServerData> svr = new ArrayList<ServerData>();
+		svr.add(new ServerData(ip, Integer.valueOf(port)));
+
+		for (ServerData i : svr) {
+			// server elements
+			Element server = document.createElement("model.ServerData");
+			rootElement.appendChild(server);
+
+			Element eIP = document.createElement("ip");
+			eIP.appendChild(document.createTextNode(i.getIp()));
+			server.appendChild(eIP);
+
+			Element ePort = document.createElement("port");
+			ePort.appendChild(document.createTextNode(Integer.toString(i
+					.getPort())));
+			server.appendChild(ePort);
+
+			root.appendChild(server);
+		}
+
+		DOMSource source = new DOMSource(document);
+
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		StreamResult result = new StreamResult(SERVERS_FILE);
+		transformer.transform(source, result);
 	}
 }
