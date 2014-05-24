@@ -52,7 +52,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	Font font;
 	Button addServer, hintButton, allGame, singleMove, connectButton;
 	Combo comboServers;
-
+	boolean continueSolving; //flag
 	Queue<State> myQ;
 
 	public AbsGameView() {
@@ -95,8 +95,8 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		shellColor = new Color(shell.getDisplay(), 250, 248, 239);
 		shell.setLayout(new GridLayout(3, false));
 		shell.setBackground(shellColor);
-		shell.setSize(520, 420);
-		shell.setMinimumSize(520, 420);
+		shell.setSize(740, 660);
+		shell.setMinimumSize(740, 660);
 		setShellText();
 
 		// Initialize the menus
@@ -212,26 +212,50 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				// no need to validate because of ui restrictions
 				boolean solveAllGame = allGame.getSelection();
 				int numOfHints;
-				if (solveAllGame)
+				
+				if (hintButton.getText()=="Stop!")
 				{
-					userCommand = GameAction.SOLVE;
-					// raise a flag of a change
-					setChanged();
-					notifyObservers();
+					hintButton.setText("Get Hint");
+					continueSolving=false;
 				}
-				else {
-					numOfHints = Integer.parseInt(numOfMoves.getText());
-					for (int i = 0; i < numOfHints; i++) {
-
+				else
+				{
+					if (solveAllGame)
+					{
+						hintButton.setText("Stop!");
 						userCommand = GameAction.SOLVE;
 						// raise a flag of a change
 						setChanged();
 						notifyObservers();
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						continueSolving=true;
+						while (continueSolving)
+						{
+							userCommand = GameAction.SOLVE;
+							// raise a flag of a change
+							setChanged();
+							notifyObservers();
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								
+								e.printStackTrace();
+							}
+						}
+					}
+					else {
+						numOfHints = Integer.parseInt(numOfMoves.getText());
+						for (int i = 0; i < numOfHints; i++) {
+	
+							userCommand = GameAction.SOLVE;
+							// raise a flag of a change
+							setChanged();
+							notifyObservers();
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+							
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -393,8 +417,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-
+			
 			}
 		});
 
@@ -446,8 +469,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-
+			
 			}
 		});
 
