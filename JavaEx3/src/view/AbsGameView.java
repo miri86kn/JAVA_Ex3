@@ -273,7 +273,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 							setChanged();
 							notifyObservers();
 							try {
-								Thread.sleep(1000);
+								Thread.sleep(500);
 							} catch (InterruptedException e) {
 
 								e.printStackTrace();
@@ -288,7 +288,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 							setChanged();
 							notifyObservers();
 							try {
-								Thread.sleep(1000);
+								Thread.sleep(100);
 							} catch (InterruptedException e) {
 
 								e.printStackTrace();

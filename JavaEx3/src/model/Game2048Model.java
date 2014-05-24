@@ -268,6 +268,7 @@ public class Game2048Model extends AbsModel {
 		boolean boardChanged=false;
 		for(int i=0; i<boardSize-1; i++)
 		{
+			
 			for(int j=0; j<boardSize; j++)
 			{
 				if (currState.getBoard()[i+1][j] == EMPTY_CELL)

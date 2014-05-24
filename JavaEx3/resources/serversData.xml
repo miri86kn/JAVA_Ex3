@@ -7,4 +7,4 @@
   <ip>10.0.0.44</ip>
   <port>4400</port>
 </model.ServerData>
-<model.ServerData><ip>10.4.5.33</ip><port>3322</port></model.ServerData><model.ServerData><ip>10.0.0.8</ip><port>1</port></model.ServerData><model.ServerData><ip>10.0.0.3</ip><port>5550</port></model.ServerData></servers>
+<model.ServerData><ip>10.4.5.33</ip><port>3322</port></model.ServerData><model.ServerData><ip>10.0.0.8</ip><port>1</port></model.ServerData><model.ServerData><ip>10.0.0.3</ip><port>5550</port></model.ServerData><model.ServerData><ip>localhost</ip><port>5550</port></model.ServerData></servers>
