@@ -289,7 +289,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		// Hint details
 		ExpandBar bar = new ExpandBar(buttonGroup, SWT.V_SCROLL);
 		// Image image = new Image(display, "yourFile.gif");
-
+		bar.setToolTipText("Hint Generator Server Settings");
 		bar.setBackground(shellColor);
 
 		// container
@@ -325,7 +325,10 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		numOfMoves = new Text(composite, SWT.BORDER);
 		numOfMoves.setText("1");
 		numOfMoves.setEnabled(false);
-
+		numOfMoves.setToolTipText("number of hints get on each Get Hint press");
+		numOfMoves.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false,
+				false, 1, 1));
+		
 		Label labelServerDetails = new Label(composite, SWT.NONE);
 		labelServerDetails.setText("2. Select Server Details");
 
@@ -334,12 +337,15 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		String[] arr = new String[serverData.size()];
 		serverData.toArray(arr);
 		comboServers.setItems(arr);
-
+		comboServers.setToolTipText("IP & Port for server connection");
+		
 		Label labelNewServer = new Label(composite, SWT.NONE);
 		labelNewServer.setText("3. Add New Server:");
 		ip = new Text(composite, SWT.BORDER);
+		ip.setToolTipText("Server IP");
 		port = new Text(composite, SWT.BORDER);
-
+		port.setToolTipText("Server Port");
+		
 		// Hint button
 		addServer = GenerateButton(composite, SWT.PUSH, new GridData(SWT.FILL,
 				SWT.TOP, false, false, 1, 1), "Add server", null);
