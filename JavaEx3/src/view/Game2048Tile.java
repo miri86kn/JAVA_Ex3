@@ -37,13 +37,7 @@ public class Game2048Tile extends Canvas {
 				Font font = new Font(getDisplay(), "Tahoma", fontSize, SWT.BOLD);
 				e.gc.setFont(font);
 				
-				//Eli's code
-				/*FontMetrics fm = e.gc.getFontMetrics();
-				int charHeight = fm.getHeight();
-				int charWidth = fm.getAverageCharWidth(); // One digit width
-				int numDigits = (tileStr.length()); // Number of digits
-				int mx = getSize().x/2 - numDigits * charWidth/2;
-				int my = getSize().y/2 - fm.getHeight()/2-fm.getDescent();*/
+		
 				
 				int strHeight = font.getFontData()[0].getHeight();
 		        int charWidth = (strHeight/2); // One digit width
@@ -85,10 +79,11 @@ public class Game2048Tile extends Canvas {
 	public void changeBackgroundColor(){
 		// Set background color
 		Color tileColor;
-		int r,g,b;
-		r=(242)%255;
-		g=Math.abs((255-value*10))%255;
-		b=(180)%255;
+		/*
+		 * int r,g,b;
+		r=Math.abs((255-value*10))%255;//(242)%255;
+		g=228;//Math.abs((255-value*10))%255;
+		b=2;//(180)%255;
 		switch (value) {
 		case 0://no number
 			tileColor= new Color(getDisplay(), 204, 192, 179);
@@ -96,8 +91,8 @@ public class Game2048Tile extends Canvas {
 		default://number->set color by value    
 			tileColor= new Color(getDisplay(), r, g, b);
 			break;
-		}
-		/*switch (value) {
+		}*/
+		switch (value) {
 			case 0:
 				tileColor= new Color(getDisplay(), 204, 192, 179);
 			    break;
@@ -108,18 +103,36 @@ public class Game2048Tile extends Canvas {
 				tileColor= new Color(getDisplay(), 237, 224, 200);
 			    break; 
 			case 8:
-				tileColor= new Color(getDisplay(), 237, 194, 147);
+				tileColor= new Color(getDisplay(), 242, 177, 121);
 			    break; 
 			case 16:
-				tileColor= new Color(getDisplay(), 220, 117, 75);
+				tileColor= new Color(getDisplay(), 245, 148, 99);
 			    break; 
 			case 32:
-				tileColor= new Color(getDisplay(), 220, 83, 53);
+				tileColor= new Color(getDisplay(), 246, 124, 94);
+			    break;
+			case 64:
+				tileColor= new Color(getDisplay(), 246, 94, 59);
+			    break;
+			case 128:
+				tileColor= new Color(getDisplay(), 237, 207, 114);
+			    break;
+			case 256:
+				tileColor= new Color(getDisplay(), 237, 204, 97);
+			    break;
+			case 512:
+				tileColor= new Color(getDisplay(), 237, 200, 80);
+			    break;
+			case 1024:
+				tileColor= new Color(getDisplay(), 237, 197, 63);
+			    break;
+			case 2048:
+				tileColor= new Color(getDisplay(), 237, 194, 46);
 			    break;
 			default:
-				tileColor= new Color(getDisplay(), 220, 186, 49);
+				tileColor= new Color(getDisplay(), 246, 186, 49);
 			  break;
-		}*/
+		}
 		setBackground(tileColor);
 	}
 	
