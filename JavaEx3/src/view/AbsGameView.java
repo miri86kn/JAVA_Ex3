@@ -1,5 +1,7 @@
 package view;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
@@ -8,13 +10,17 @@ import java.util.Queue;
 import model.State;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -46,14 +52,20 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	Group boardGroup, buttonGroup;
 	Label scoreLbl, bestScoreLbl, connectionStateLbl;
 	State currState;
-	// Button allGame, singleMove;
 	Text numOfMoves, ip, port;
 	Color shellColor;
 	Font font;
 	Button addServer, hintButton, allGame, singleMove, connectButton;
 	Combo comboServers;
-	boolean continueSolving; //flag
+	boolean continueSolving; // flag
 	Queue<State> myQ;
+	Image image;
+	ImageLoader loader;
+	
+	Thread animationThread;
+	ImageData[] imageDataArray;
+	GC animationGC;
+	Composite animationContent;
 
 	public AbsGameView() {
 		super();
@@ -95,8 +107,8 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		shellColor = new Color(shell.getDisplay(), 250, 248, 239);
 		shell.setLayout(new GridLayout(3, false));
 		shell.setBackground(shellColor);
-		shell.setSize(740, 660);
-		shell.setMinimumSize(740, 660);
+		shell.setSize(770, 730);
+		shell.setMinimumSize(770, 730);
 		setShellText();
 
 		// Initialize the menus
@@ -110,10 +122,14 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		// Initialize server settings menu
 		initServerSettingMenu();
 
+		createAnimatedGif(buttonGroup);
+		
 		// Initialize the main group which contains game board and score groups
 		initBoardGroup();
-
+		
 		shell.open();
+
+		// thread.start();
 	}
 
 	private void initButtonGroupMenu() {
@@ -212,24 +228,21 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				// no need to validate because of ui restrictions
 				boolean solveAllGame = allGame.getSelection();
 				int numOfHints;
-				
-				if (hintButton.getText()=="Stop!")
-				{
+
+				if (hintButton.getText() == "Stop!") {
 					hintButton.setText("Get Hint");
-					continueSolving=false;
-				}
-				else
-				{
-					if (solveAllGame)
-					{
+					continueSolving = false;
+				} else {
+					animationContent.setVisible(true);
+					//animationThread.start();
+					if (solveAllGame) {
 						hintButton.setText("Stop!");
 						userCommand = GameAction.SOLVE;
 						// raise a flag of a change
 						setChanged();
 						notifyObservers();
-						continueSolving=true;
-						while (continueSolving)
-						{
+						continueSolving = true;
+						while (continueSolving) {
 							userCommand = GameAction.SOLVE;
 							// raise a flag of a change
 							setChanged();
@@ -237,15 +250,14 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
-								
+
 								e.printStackTrace();
 							}
 						}
-					}
-					else {
+					} else {
 						numOfHints = Integer.parseInt(numOfMoves.getText());
 						for (int i = 0; i < numOfHints; i++) {
-	
+
 							userCommand = GameAction.SOLVE;
 							// raise a flag of a change
 							setChanged();
@@ -253,14 +265,15 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
-							
+
 								e.printStackTrace();
 							}
 						}
+						
 					}
+					//animationThread.stop();
+					animationContent.setVisible(false);
 				}
-				
-				
 
 			}
 
@@ -336,8 +349,10 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				SWT.FILL, SWT.TOP, false, false, 1, 1), "Connect", null);
 		connectButton.setEnabled(false);
 		connectButton.setText("Connect");
-		
+
 		connectionStateLbl = new Label(composite, SWT.NONE);
+
+	
 		
 		ExpandItem hintSettingsExpander = new ExpandItem(bar, SWT.NONE, 0);
 		hintSettingsExpander.setText("Hint Settings         :");
@@ -349,7 +364,6 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 
 		addServer.setEnabled(false);
 		bar.setSpacing(8);
-		
 
 		// On Choose solve all game or solve few moves
 		allGame.addSelectionListener(new SelectionListener() {
@@ -417,7 +431,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-			
+
 			}
 		});
 
@@ -441,21 +455,20 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				if (connectButton.getText() == "Connect"){
-				String selectedServerData = comboServers.getText();
-				userCommand = GameAction.CONNECT;
-				// raise a flag of a change
-				setChanged();
-				// actively notify all observers
-				// and invoke their update method
-				Object[] args = { selectedServerData.split(" ")[0],
-						Integer.parseInt(selectedServerData.split(" ")[1]) };
-				notifyObservers(args);
-				hintButton.setEnabled(true);
-				connectionStateLbl.setText("connected....");
-				connectButton.setText("Disconnect");
-				}
-				else{
+				if (connectButton.getText() == "Connect") {
+					String selectedServerData = comboServers.getText();
+					userCommand = GameAction.CONNECT;
+					// raise a flag of a change
+					setChanged();
+					// actively notify all observers
+					// and invoke their update method
+					Object[] args = { selectedServerData.split(" ")[0],
+							Integer.parseInt(selectedServerData.split(" ")[1]) };
+					notifyObservers(args);
+					hintButton.setEnabled(true);
+					connectionStateLbl.setText("connected....");
+					connectButton.setText("Disconnect");
+				} else {
 					userCommand = GameAction.DISCONNECT;
 					// raise a flag of a change
 					setChanged();
@@ -469,10 +482,144 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-			
+
 			}
 		});
 
+	}
+
+	private void createAnimatedGif(Composite parent) {
+
+		loader = new ImageLoader();
+		String filename = "resources\\Images\\Loading.gif";
+		animationContent = new Composite(parent, SWT.NO_BACKGROUND);
+		animationContent.moveAbove(parent);
+		animationContent.setBackground(shellColor);
+		animationContent.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false,
+				false, 1, 1));
+		animationGC = new GC(animationContent);
+		animationContent.setVisible(false);
+		try {
+			InputStream inputStream = new FileInputStream(filename);
+			imageDataArray = loader.load(inputStream);
+			if (imageDataArray.length > 1) {
+				animationThread = new Thread("Animation") {
+					public void run() {
+						/*
+						 * Create an off-screen image to draw on, and fill it
+						 * with the shell background.
+						 */
+						Image offScreenImage = new Image(display,
+								loader.logicalScreenWidth,
+								loader.logicalScreenHeight);
+						GC offScreenImageGC = new GC(offScreenImage);
+						offScreenImageGC.setBackground(shellColor);
+						offScreenImageGC.fillRectangle(0, 0,
+								loader.logicalScreenWidth,
+								loader.logicalScreenHeight);
+
+						try {
+							/*
+							 * Create the first image and draw it on the
+							 * off-screen image.
+							 */
+							int imageDataIndex = 0;
+							ImageData imageData = imageDataArray[imageDataIndex];
+							if (image != null && !image.isDisposed())
+								image.dispose();
+							image = new Image(display, imageData);
+							offScreenImageGC.drawImage(image, 0, 0,
+									imageData.width, imageData.height,
+									imageData.x, imageData.y, imageData.width,
+									imageData.height);
+
+							/*
+							 * Now loop through the images, creating and drawing
+							 * each one on the off-screen image before drawing
+							 * it on the shell.
+							 */
+							int repeatCount = loader.repeatCount;
+							while (loader.repeatCount == 0 || repeatCount > 0) {
+								switch (imageData.disposalMethod) {
+								case SWT.DM_FILL_BACKGROUND:
+									/*
+									 * Fill with the background color before
+									 * drawing.
+									 */
+
+									offScreenImageGC.setBackground(shellColor);
+									offScreenImageGC.fillRectangle(imageData.x,
+											imageData.y, imageData.width,
+											imageData.height);
+
+									break;
+								case SWT.DM_FILL_PREVIOUS:
+									/*
+									 * Restore the previous image before
+									 * drawing.
+									 */
+									offScreenImageGC.drawImage(image, 0, 0,
+											imageData.width, imageData.height,
+											imageData.x, imageData.y,
+											imageData.width, imageData.height);
+									break;
+								}
+
+								imageDataIndex = (imageDataIndex + 1)
+										% imageDataArray.length;
+								imageData = imageDataArray[imageDataIndex];
+								image.dispose();
+								image = new Image(display, imageData);
+								offScreenImageGC.drawImage(image, 0, 0,
+										imageData.width, imageData.height,
+										imageData.x, imageData.y,
+										imageData.width, imageData.height);
+
+								/* Draw the off-screen image to the shell. */
+								animationGC.drawImage(offScreenImage, 0, 0);
+
+								/*
+								 * Sleep for the specified delay time (adding
+								 * commonly-used slow-down fudge factors).
+								 */
+								try {
+									int ms = imageData.delayTime * 10;
+									if (ms < 20)
+										ms += 30;
+									if (ms < 30)
+										ms += 10;
+									Thread.sleep(ms);
+								} catch (InterruptedException e) {
+								}
+
+								/*
+								 * If we have just drawn the last image,
+								 * decrement the repeat count and start again.
+								 */
+								if (imageDataIndex == imageDataArray.length - 1)
+									repeatCount--;
+							}
+						} catch (SWTException ex) {
+							System.out
+									.println("There was an error animating the GIF");
+						} finally {
+							if (offScreenImage != null
+									&& !offScreenImage.isDisposed())
+								offScreenImage.dispose();
+							if (offScreenImageGC != null
+									&& !offScreenImageGC.isDisposed())
+								offScreenImageGC.dispose();
+							if (image != null && !image.isDisposed())
+								image.dispose();
+						}
+					}
+				};
+				animationThread.setDaemon(true);
+				animationThread.start();
+			}
+		} catch (Exception ex) {
+			System.out.println("There was an error loading the GIF");
+		}
 	}
 
 	// Method which initializes menu components
@@ -700,7 +847,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	@Override
 	public void displayBoard(State state) {
 		currState = state;
-		
+
 		display.syncExec(new Runnable() {
 			@Override
 			public void run() {

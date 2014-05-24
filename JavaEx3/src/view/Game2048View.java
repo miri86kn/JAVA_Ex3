@@ -34,7 +34,7 @@ public class Game2048View extends AbsGameView {
 		this.board.setFocus();
 
 		// TODO: find elegant way to display the board for the first time!!
-		shell.setMinimumSize(741, 661);
+		shell.setMinimumSize(771, 731);
 		
 		display.addFilter(SWT.KeyUp, new Listener()
 	    {
