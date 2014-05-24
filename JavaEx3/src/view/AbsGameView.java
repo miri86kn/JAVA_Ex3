@@ -38,12 +38,14 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
@@ -137,6 +139,19 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		
 		// Initialize the main group which contains game board and score groups
 		initBoardGroup();
+
+		shell.addListener(SWT.Close, new Listener() {
+			@Override
+			public void handleEvent(Event arg0) {
+				
+				if (connectButton.getText()=="Disconnect")
+				{
+					userCommand = GameAction.DISCONNECT;
+					setChanged();
+					notifyObservers();
+				}
+			}
+		});
 		
 		shell.open();
 
