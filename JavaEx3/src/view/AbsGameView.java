@@ -146,9 +146,8 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 				
 				if (connectButton.getText()=="Disconnect")
 				{
-					userCommand = GameAction.DISCONNECT;
-					setChanged();
-					notifyObservers();
+					// disconnect client from server before exit
+					disconnetClient();
 				}
 			}
 		});
@@ -508,10 +507,7 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 					connectionStateLbl.setText("connected....");
 					connectButton.setText("Disconnect");
 				} else {
-					userCommand = GameAction.DISCONNECT;
-					// raise a flag of a change
-					setChanged();
-					notifyObservers();
+					disconnetClient();
 					hintButton.setEnabled(false);
 					connectionStateLbl.setText("");
 					connectButton.setText("Connect");
@@ -679,6 +675,8 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		loadItem.setText("Load Game");
 		MenuItem saveItem = new MenuItem(fileMenu, SWT.NONE);
 		saveItem.setText("Save Game");
+		MenuItem exitItem = new MenuItem(fileMenu, SWT.NONE);
+		exitItem.setText("Exit");
 
 		// Determine load item select action
 		loadItem.addSelectionListener(new SelectionListener() {
@@ -700,6 +698,20 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				saveGame();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			}
+		});
+		
+		// Determine save item select action
+		exitItem.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				//TODO: exit
+				shell.close();
 			}
 
 			@Override
@@ -967,6 +979,13 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 		if (board != null) {
 			board.setFocus();
 		}
+	}
+	
+	private void disconnetClient() {
+		userCommand = GameAction.DISCONNECT;
+		// raise a flag of a change
+		setChanged();
+		notifyObservers();
 	}
 
 	protected abstract void setShellText();
