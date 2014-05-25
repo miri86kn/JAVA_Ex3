@@ -936,11 +936,13 @@ public abstract class AbsGameView extends Observable implements View, Runnable {
 	@Override
 	// Method for handling game over
 	public void gameOver() {
+		animationContent.setVisible(false);
 		MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION
 				| SWT.YES | SWT.NO);
 		messageBox.setMessage("GAME OVER: Start new game?");
 		messageBox.setText("Game Over");
 		int response = messageBox.open();
+		
 		if (response == SWT.YES)
 			newGame();
 		else
